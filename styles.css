@@ -1169,7 +1169,7 @@ body {
     .nav-links, .nav-actions .btn { display: none; }
     .mobile-menu-btn { display: block; }
     
-    .hero { padding-top: 120px; }
+    .hero { padding-top: 40px; }
     .hero-container { grid-template-columns: 1fr; }
     .hero-visual { max-width: 500px; margin: 0 auto; }
     .hero-buttons { flex-direction: column; }
@@ -1354,7 +1354,7 @@ body {
     
     /* Show mobile nav */
     .mobile-bottom-nav {
-        display: flex;
+        display: flex !important;
         position: fixed;
         bottom: 0;
         left: 0;
