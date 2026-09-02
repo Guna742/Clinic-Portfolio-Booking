@@ -284,11 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Dynamically set section height so scroll speed is exactly 1:1
         const setSectionHeight = () => {
-            if (window.innerWidth > 768) {
-                whyUsSection.style.height = 'auto';
-                whyUsTrack.style.transform = 'none';
-                return;
-            }
+            // Early returns removed to enable desktop scroll
             const maxTranslate = whyUsTrack.scrollWidth - window.innerWidth;
             if (maxTranslate > 0) {
                 whyUsSection.style.height = `${window.innerHeight + maxTranslate}px`;
@@ -298,10 +294,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         const updateScroll = () => {
-            if (window.innerWidth > 768) {
-                ticking = false;
-                return;
-            }
+            // Early returns removed to enable desktop scroll
             const rect = whyUsSection.getBoundingClientRect();
             if (rect.top <= 0 && rect.bottom >= window.innerHeight) {
                 const totalScrollLength = rect.height - window.innerHeight;
