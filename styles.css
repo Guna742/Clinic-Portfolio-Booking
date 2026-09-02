@@ -1347,8 +1347,8 @@ body {
     .review-card-fixed .review-text { font-size: 14px; -webkit-line-clamp: 4; }
     .marquee-content { gap: 16px; padding-right: 16px; }
 
-    /* Hide top nav items */
-    .nav-links, .mobile-menu-btn, .nav-actions .btn {
+    /* Hide top nav items entirely */
+    .navbar {
         display: none !important;
     }
     
@@ -1463,7 +1463,6 @@ body {
         box-shadow: -1px -10px 0 0 var(--bg-white);
     }
     
-    /* Ensure content is not hidden behind nav */
     body {
         padding-bottom: 70px;
     }
