@@ -1525,3 +1525,6 @@ html, body { overflow-x: clip; max-width: 100%; }
 
 .why-us-header { margin-bottom: 48px; }
 @media (max-width: 768px) { .why-us-header { margin-bottom: 24px; } .navbar { display: none !important; } }
+
+.faq-animation { width: 100%; max-width: 450px; transform: scale(1.1); }
+@media (min-width: 769px) { .faq-animation { transform: translateY(-80px) scale(1.1); } }
