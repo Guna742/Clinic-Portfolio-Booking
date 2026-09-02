@@ -1340,6 +1340,10 @@ body {
 @media (max-width: 768px) {
     .video-card-minimal { width: 180px; }
     .video-card-minimal .video-placeholder { aspect-ratio: 9/16; }
-    .review-card-fixed { width: 320px; padding: 24px; }
+    .review-card-fixed { width: 280px; padding: 20px; }
+    .review-card-fixed .reviewer-avatar { width: 40px; height: 40px; font-size: 16px; }
+    .review-card-fixed .review-header { gap: 12px; margin-bottom: 16px; }
+    .review-card-fixed .reviewer-name { font-size: 16px; }
+    .review-card-fixed .review-text { font-size: 14px; -webkit-line-clamp: 4; }
     .marquee-content { gap: 16px; padding-right: 16px; }
 }
