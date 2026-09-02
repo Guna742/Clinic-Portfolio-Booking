@@ -328,6 +328,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Active link highlighting
     const sections = document.querySelectorAll('section[id]');
     const navLinks = document.querySelectorAll('.nav-links a');
+    const mobileNavItems = document.querySelectorAll('.mobile-bottom-nav ul li');
+    const indicator = document.querySelector('.mobile-bottom-nav .indicator');
 
     const observerOptions = {
         root: null,
@@ -344,9 +346,35 @@ document.addEventListener('DOMContentLoaded', () => {
                         link.classList.add('active');
                     }
                 });
+                
+                // Sync mobile bottom nav
+                if (mobileNavItems.length && indicator) {
+                    mobileNavItems.forEach((item, index) => {
+                        item.classList.remove('active');
+                        const link = item.querySelector('a');
+                        if (link && link.getAttribute('href') === '#' + entry.target.id) {
+                            item.classList.add('active');
+                            const itemWidthPercent = 100 / mobileNavItems.length;
+                            indicator.style.left = `calc(${index * itemWidthPercent}% + (${itemWidthPercent}% / 2) - 25px)`;
+                        }
+                    });
+                }
             }
         });
     }, observerOptions);
+
+    if (mobileNavItems.length && indicator) {
+        mobileNavItems.forEach((item, index) => {
+            item.addEventListener('click', (e) => {
+                // IntersectionObserver handles the class changes on scroll, 
+                // but we also want instant feedback on click before smooth scroll finishes
+                mobileNavItems.forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+                const itemWidthPercent = 100 / mobileNavItems.length;
+                indicator.style.left = `calc(${index * itemWidthPercent}% + (${itemWidthPercent}% / 2) - 25px)`;
+            });
+        });
+    }
 
     sections.forEach(section => observer.observe(section));
 
