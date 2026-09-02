@@ -1050,8 +1050,10 @@ img {
     padding: 80px 0 40px;
 }
 
-body {
+html, body {
     background-color: var(--clr-navy);
+    overflow-x: hidden;
+    max-width: 100%;
 }
 
 .main-wrapper {
@@ -1405,7 +1407,7 @@ body {
     }
     
     .mobile-bottom-nav ul li.active a .icon {
-        transform: translateY(-44px);
+        transform: translateY(-35px);
         color: white;
     }
     
@@ -1428,38 +1430,14 @@ body {
     
     .mobile-bottom-nav .indicator {
         position: absolute;
-        top: -35px;
+        top: -25px;
         width: 50px;
         height: 50px;
         background: var(--grad-cta);
         border-radius: 50%;
-        border: 6px solid var(--bg-white);
-        transition: 0.5s;
+        transition: 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         left: calc( (100% / 6) / 2 - 25px );
-    }
-    
-    .mobile-bottom-nav .indicator::before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: -22px;
-        width: 20px;
-        height: 20px;
-        background: transparent;
-        border-top-right-radius: 20px;
-        box-shadow: 1px -10px 0 0 var(--bg-white);
-    }
-    
-    .mobile-bottom-nav .indicator::after {
-        content: '';
-        position: absolute;
-        top: 50%;
-        right: -22px;
-        width: 20px;
-        height: 20px;
-        background: transparent;
-        border-top-left-radius: 20px;
-        box-shadow: -1px -10px 0 0 var(--bg-white);
+        box-shadow: 0 8px 20px rgba(23, 195, 178, 0.4);
     }
     
     body {
