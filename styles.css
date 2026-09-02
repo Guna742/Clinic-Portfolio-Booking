@@ -544,7 +544,7 @@ img {
    Section 4: Why Choose Us
    ========================================================================== */
 #why-us {
-    height: 400vh;
+    height: 200vh;
     position: relative;
 }
 
@@ -982,7 +982,7 @@ img {
    ========================================================================== */
 .cta-section {
     position: relative;
-    padding: 120px 0;
+    padding: 64px 0;
     color: white;
     overflow: hidden;
     border-bottom-left-radius: 48px;
@@ -1191,7 +1191,8 @@ body {
     .booking-panel { padding: 32px 24px; }
     .progress-steps { display: none; }
     
-    .cta-title { font-size: 40px; }
+    .cta-title { font-size: 32px; }
+    .cta-description { font-size: 16px; margin-bottom: 32px; }
     .cta-buttons { flex-direction: column; }
     
     .footer { padding: 32px 24px 24px; }
