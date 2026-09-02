@@ -272,44 +272,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // ==========================================
-    // Horizontal Scroll for "Why Choose Us"
-    // ==========================================
-    const whyUsSection = document.getElementById('why-us');
-    const whyUsTrack = document.getElementById('why-choose-us-track');
-    
-    if (whyUsSection && whyUsTrack) {
-        let ticking = false;
-        
-        const updateScroll = () => {
-            const rect = whyUsSection.getBoundingClientRect();
-            if (rect.top <= 0 && rect.bottom >= window.innerHeight) {
-                const totalScrollLength = rect.height - window.innerHeight;
-                const currentScroll = Math.abs(rect.top);
-                const scrollProgress = currentScroll / totalScrollLength;
-                const maxTranslate = whyUsTrack.scrollWidth - window.innerWidth;
-                
-                if (maxTranslate > 0) {
-                    whyUsTrack.style.transform = `translateX(-${scrollProgress * maxTranslate}px)`;
-                }
-            } else if (rect.top > 0) {
-                whyUsTrack.style.transform = `translateX(0px)`;
-            } else {
-                const maxTranslate = whyUsTrack.scrollWidth - window.innerWidth;
-                if (maxTranslate > 0) {
-                    whyUsTrack.style.transform = `translateX(-${maxTranslate}px)`;
-                }
-            }
-            ticking = false;
-        };
-        
-        window.addEventListener('scroll', () => {
-            if (!ticking) {
-                window.requestAnimationFrame(updateScroll);
-                ticking = true;
-            }
-        }, { passive: true });
-    }
 
     // ==========================================
     // Navbar Scroll & Glow Effect
