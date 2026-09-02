@@ -1181,7 +1181,7 @@ html, body {
     .video-grid { grid-template-columns: 1fr; }
     
     .features-grid, .services-grid, .reviews-grid { grid-template-columns: 1fr; }
-    .sticky-wrapper { padding-top: 80px; justify-content: flex-start; }
+    .sticky-wrapper { padding-top: 20px; justify-content: flex-start; }
     
     .feature-card { width: 85vw !important; max-width: 320px !important; padding: 24px 20px; }
     
@@ -1484,3 +1484,6 @@ i[class^="ph-"], i[class*=" ph-"] {
 .sticky-wrapper { position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
 
 html, body { overflow-x: clip; max-width: 100%; }
+
+.why-us-header { margin-bottom: 48px; }
+@media (max-width: 768px) { .why-us-header { margin-bottom: 24px; } .navbar { display: none !important; } }
