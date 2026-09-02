@@ -279,7 +279,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const whyUsTrack = document.getElementById('why-choose-us-track');
     
     if (whyUsSection && whyUsTrack) {
-        window.addEventListener('scroll', () => {
+        let ticking = false;
+        
+        const updateScroll = () => {
             const rect = whyUsSection.getBoundingClientRect();
             if (rect.top <= 0 && rect.bottom >= window.innerHeight) {
                 const totalScrollLength = rect.height - window.innerHeight;
@@ -298,7 +300,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     whyUsTrack.style.transform = `translateX(-${maxTranslate}px)`;
                 }
             }
-        });
+            ticking = false;
+        };
+        
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                window.requestAnimationFrame(updateScroll);
+                ticking = true;
+            }
+        }, { passive: true });
     }
 
     // ==========================================

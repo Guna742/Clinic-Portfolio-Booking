@@ -1338,7 +1338,8 @@ body {
 .text-google { color: #4285F4; font-size: 16px; }
 
 @media (max-width: 768px) {
-    .video-card-minimal { width: 280px; }
+    .video-card-minimal { width: 300px; }
+    .video-card-minimal .video-placeholder { aspect-ratio: 16/9; }
     .review-card-fixed { width: 320px; padding: 24px; }
     .marquee-content { gap: 16px; padding-right: 16px; }
 }
