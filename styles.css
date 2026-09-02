@@ -1459,12 +1459,11 @@ i[class^="ph-"], i[class*=" ph-"] {
 .features-scroll-track {
     display: flex;
     gap: 32px;
-    
-    
     padding: 0 max(32px, calc((100vw - 1200px) / 2));
-    width: max-content; will-change: transform;
+    width: max-content; 
+    will-change: transform;
     -webkit-overflow-scrolling: touch;
-    scrollbar-width: none; /* Hide scrollbar Firefox */
+    scrollbar-width: none;
 }
 .features-scroll-track::-webkit-scrollbar { display: none; }
 .features-scroll-track .feature-card {
@@ -1473,15 +1472,54 @@ i[class^="ph-"], i[class*=" ph-"] {
     opacity: 1;
     transform: none;
 }
-@media (max-width: 768px) {
-    .features-scroll-track .feature-card {
-        flex: 0 0 85vw;
-        max-width: 320px;
-    }
-}
 
 #why-us { position: relative; }
 .sticky-wrapper { position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
+
+@media (min-width: 769px) {
+    .features-scroll-track {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 32px;
+        width: 100%;
+        padding: 0;
+        margin-top: 48px;
+    }
+    .features-scroll-track .feature-card {
+        flex: auto;
+    }
+    .sticky-wrapper {
+        position: static;
+        height: auto;
+        display: block;
+    }
+}
+
+@media (max-width: 768px) {
+    .features-scroll-track {
+        padding: 0 calc(50vw - min(42.5vw, 160px));
+        gap: 16px;
+        transform: translateY(-40px);
+    }
+    .features-scroll-track .feature-card {
+        flex: 0 0 85vw;
+        max-width: 320px;
+        padding: 20px 16px !important;
+    }
+    .features-scroll-track .feature-card .feature-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 24px;
+        margin-bottom: 12px;
+    }
+    .features-scroll-track .feature-card .feature-title {
+        font-size: 18px;
+        margin-bottom: 8px;
+    }
+    .features-scroll-track .feature-card .feature-text {
+        font-size: 14px;
+    }
+}
 
 html, body { overflow-x: clip; max-width: 100%; }
 
