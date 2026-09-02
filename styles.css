@@ -1448,3 +1448,10 @@ html, body {
 .mobile-bottom-nav {
     display: none;
 }
+
+/* ==========================================================================
+   Premium Cinematic Icon Shadows (Global)
+   ========================================================================== */
+i[class^="ph-"], i[class*=" ph-"] {
+    filter: drop-shadow(0 10px 15px rgba(37, 99, 235, 0.15)) drop-shadow(0 4px 6px rgba(0, 0, 0, 0.12));
+}

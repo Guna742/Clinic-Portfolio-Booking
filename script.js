@@ -340,24 +340,34 @@ document.addEventListener('DOMContentLoaded', () => {
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                navLinks.forEach(link => {
-                    link.classList.remove('active');
-                    if (link.getAttribute('href') === '#' + entry.target.id) {
-                        link.classList.add('active');
-                    }
+                // Only update nav if the section actually has a corresponding link
+                const targetId = '#' + entry.target.id;
+                const hasDesktopLink = Array.from(navLinks).some(link => link.getAttribute('href') === targetId);
+                const hasMobileLink = Array.from(mobileNavItems).some(item => {
+                    const a = item.querySelector('a');
+                    return a && a.getAttribute('href') === targetId;
                 });
                 
-                // Sync mobile bottom nav
-                if (mobileNavItems.length && indicator) {
-                    mobileNavItems.forEach((item, index) => {
-                        item.classList.remove('active');
-                        const link = item.querySelector('a');
-                        if (link && link.getAttribute('href') === '#' + entry.target.id) {
-                            item.classList.add('active');
-                            const itemWidthPercent = 100 / mobileNavItems.length;
-                            indicator.style.left = `calc(${index * itemWidthPercent}% + (${itemWidthPercent}% / 2) - 25px)`;
+                if (hasDesktopLink || hasMobileLink) {
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === targetId) {
+                            link.classList.add('active');
                         }
                     });
+                    
+                    // Sync mobile bottom nav
+                    if (mobileNavItems.length && indicator) {
+                        mobileNavItems.forEach((item, index) => {
+                            item.classList.remove('active');
+                            const link = item.querySelector('a');
+                            if (link && link.getAttribute('href') === targetId) {
+                                item.classList.add('active');
+                                const itemWidthPercent = 100 / mobileNavItems.length;
+                                indicator.style.left = `calc(${index * itemWidthPercent}% + (${itemWidthPercent}% / 2) - 25px)`;
+                            }
+                        });
+                    }
                 }
             }
         });
