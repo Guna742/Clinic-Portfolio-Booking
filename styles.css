@@ -367,7 +367,7 @@ img {
    ========================================================================== */
 .hero {
     padding-top: 160px;
-    min-
+    min-height: 100vh;
     display: flex;
     align-items: center;
     overflow: hidden;
@@ -949,6 +949,7 @@ img {
     color: var(--text-muted);
     display: -webkit-box;
     -webkit-line-clamp: 3;
+    line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
     min-height: 72px; /* Minimum 3 lines roughly */
@@ -1397,7 +1398,7 @@ html, body {
     .review-card-fixed .reviewer-avatar { width: 40px; height: 40px; font-size: 16px; }
     .review-card-fixed .review-header { gap: 12px; margin-bottom: 16px; }
     .review-card-fixed .reviewer-name { font-size: 16px; }
-    .review-card-fixed .review-text { font-size: 14px; -webkit-line-clamp: 4; }
+    .review-card-fixed .review-text { font-size: 14px; -webkit-line-clamp: 4; line-clamp: 4; }
     .marquee-content { gap: 16px; padding-right: 16px; }
 
     /* Hide top nav items entirely */
@@ -1502,12 +1503,6 @@ html, body {
     display: none;
 }
 
-/* ==========================================================================
-   Premium Cinematic Icon Shadows (Global)
-   ========================================================================== */
-i[class^="ph-"], i[class*=" ph-"] {
-    /* Shadows removed per user request */
-}
 
 .features-scroll-track {
     display: flex;

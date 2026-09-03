@@ -151,9 +151,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         if (selectDateBtn) {
-            selectDateBtn.addEventListener('click', () => {
-                if(!selectedDate) return;
-                showTimeSelection();
+            selectDateBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                openGeneralBookingModal(selectedDate || new Date());
             });
         }
     }
@@ -576,12 +576,24 @@ document.addEventListener('DOMContentLoaded', () => {
         bookingDateInput.value = todayStr;
     }
 
-    function openGeneralBookingModal() {
+    function openGeneralBookingModal(prefilledDate = null) {
         if (!generalBookingModal) return;
         // If login modal was open, close it
         if (isLoginModalOpen) closeLoginModal();
 
         resetBookingModal();
+
+        if (prefilledDate && prefilledDate instanceof Date && !isNaN(prefilledDate)) {
+            const year = prefilledDate.getFullYear();
+            const month = String(prefilledDate.getMonth() + 1).padStart(2, '0');
+            const day = String(prefilledDate.getDate()).padStart(2, '0');
+            const dateStr = `${year}-${month}-${day}`;
+            if (bookingDateInput) {
+                bookingDateInput.value = dateStr;
+            }
+        }
+        updateBookingSummary();
+
         generalBookingModal.style.display = 'flex';
         requestAnimationFrame(() => {
             generalBookingModal.classList.add('active');
@@ -678,11 +690,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Attach open buttons
-    openBookingBtns.forEach(btn => {
+    // Attach open buttons to all booking buttons/links across the site
+    const allBookingTriggers = document.querySelectorAll('.open-booking-btn, #select-date-btn, a[href="#booking"], button[data-booking]');
+    allBookingTriggers.forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
-            openGeneralBookingModal();
+            openGeneralBookingModal(selectedDate || new Date());
         });
     });
 
