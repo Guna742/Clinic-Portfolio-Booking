@@ -224,8 +224,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     selectDateBtn.disabled = false;
                 }
                 
-                // Open popup modal upon date selection
-                openQuickBookingModal();
+                // Open booking or request login with selected date
+                handleBookingRequest(selectedDate);
             });
         });
     }
@@ -236,9 +236,9 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (selectDateBtn) {
             selectDateBtn.textContent = `Book for ${monthNames[currentMonth].substring(0, 3)} ${selectedDate.getDate()}`;
-            selectDateBtn.addEventListener('click', () => {
-                if (!selectedDate) return;
-                openQuickBookingModal();
+            selectDateBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                handleBookingRequest(selectedDate || new Date());
             });
         }
         
@@ -489,9 +489,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize
     setTimeout(updateFooterParallax, 100);
 
-    // ==========================================
-    // LOGIN MODAL POPUP & 30-SECOND AUTO-TRIGGER
-    // ==========================================
+    // ==========================================================
+    // USER AUTHENTICATION STATE & LOGGED-IN MANAGEMENT
+    // ==========================================================
     const loginModal = document.getElementById('login-modal');
     const navLoginBtn = document.getElementById('nav-login-btn');
     const closeLoginBtn = document.getElementById('close-login-modal');
@@ -502,8 +502,55 @@ document.addEventListener('DOMContentLoaded', () => {
     const toggleLoginPwd = document.getElementById('toggle-login-pwd');
     const loginPwdInput = document.getElementById('login-password');
     const authStatusMsg = document.getElementById('auth-status-msg');
+    const bookingLoginAlert = document.getElementById('booking-login-alert');
 
     let isLoginModalOpen = false;
+    let pendingBooking = null; // Stores target booking date when redirecting through login
+
+    function getSignedInUser() {
+        try {
+            const stored = localStorage.getItem('aura_clinic_user');
+            return stored ? JSON.parse(stored) : null;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function isUserSignedIn() {
+        return getSignedInUser() !== null;
+    }
+
+    function setSignedInUser(userData) {
+        try {
+            localStorage.setItem('aura_clinic_user', JSON.stringify(userData));
+        } catch (e) {
+            console.error('Error saving user data:', e);
+        }
+        updateAuthUI();
+    }
+
+    function logoutUser() {
+        try {
+            localStorage.removeItem('aura_clinic_user');
+        } catch (e) {
+            console.error('Error removing user data:', e);
+        }
+        updateAuthUI();
+    }
+
+    function updateAuthUI() {
+        const user = getSignedInUser();
+        if (navLoginBtn) {
+            if (user) {
+                const displayName = user.name || 'Account';
+                navLoginBtn.innerHTML = `<i class="ph-fill ph-user-circle" style="font-size: 16px;"></i> <span>${displayName}</span> <span id="nav-logout-action" title="Sign Out"><i class="ph ph-sign-out"></i></span>`;
+                navLoginBtn.classList.add('logged-in');
+            } else {
+                navLoginBtn.innerHTML = `<i class="ph ph-user"></i> Login`;
+                navLoginBtn.classList.remove('logged-in');
+            }
+        }
+    }
 
     function openLoginModal() {
         if (!loginModal) return;
@@ -521,12 +568,78 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             loginModal.style.display = 'none';
             if (authStatusMsg) authStatusMsg.style.display = 'none';
+            if (bookingLoginAlert) bookingLoginAlert.style.display = 'none';
         }, 300);
+    }
+
+    function promptLoginForBooking(targetDate = null) {
+        pendingBooking = {
+            date: targetDate || selectedDate || new Date()
+        };
+        if (bookingLoginAlert) {
+            bookingLoginAlert.style.display = 'flex';
+        }
+        openLoginModal();
+    }
+
+    function handleBookingRequest(targetDate = null) {
+        const dateToBook = targetDate || selectedDate || new Date();
+        if (!isUserSignedIn()) {
+            promptLoginForBooking(dateToBook);
+        } else {
+            openGeneralBookingModal(dateToBook);
+        }
+    }
+
+    function handleSuccessfulAuth(userData, isNewAccount = false) {
+        setSignedInUser(userData);
+
+        if (authStatusMsg) {
+            if (pendingBooking) {
+                authStatusMsg.textContent = `Welcome, ${userData.name}! Opening your appointment booking...`;
+            } else {
+                authStatusMsg.textContent = isNewAccount
+                    ? `Account created successfully! Welcome to AuraClinic, ${userData.name}.`
+                    : `Welcome back, ${userData.name}! Logged in successfully.`;
+            }
+            authStatusMsg.style.display = 'block';
+            authStatusMsg.style.background = '#ecfdf5';
+            authStatusMsg.style.color = '#065f46';
+            authStatusMsg.style.borderColor = '#a7f3d0';
+        }
+
+        setTimeout(() => {
+            closeLoginModal();
+            if (pendingBooking) {
+                const targetDate = pendingBooking.date;
+                pendingBooking = null;
+                setTimeout(() => {
+                    openGeneralBookingModal(targetDate);
+                }, 350);
+            }
+        }, pendingBooking ? 600 : 1000);
     }
 
     if (navLoginBtn) {
         navLoginBtn.addEventListener('click', (e) => {
             e.preventDefault();
+            const logoutTrigger = e.target.closest('#nav-logout-action');
+            if (logoutTrigger) {
+                logoutUser();
+                return;
+            }
+
+            if (isUserSignedIn()) {
+                const user = getSignedInUser();
+                const confirmLogout = confirm(`Signed in as ${user?.name || 'Patient'} (${user?.email || ''}).\n\nDo you want to log out?`);
+                if (confirmLogout) {
+                    logoutUser();
+                }
+                return;
+            }
+
+            pendingBooking = null;
+            if (bookingLoginAlert) bookingLoginAlert.style.display = 'none';
             openLoginModal();
         });
     }
@@ -571,51 +684,53 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Simulated Login submission
+    // Login Form submission
     if (loginForm) {
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const email = document.getElementById('login-email').value;
-            if (authStatusMsg) {
-                authStatusMsg.textContent = `Welcome back! Logged in as ${email}`;
-                authStatusMsg.style.display = 'block';
-                authStatusMsg.style.background = '#ecfdf5';
-                authStatusMsg.style.color = '#065f46';
-                authStatusMsg.style.borderColor = '#a7f3d0';
-            }
-            setTimeout(() => {
-                closeLoginModal();
-            }, 1200);
+            const emailInput = document.getElementById('login-email');
+            const email = emailInput ? emailInput.value.trim() : 'patient@example.com';
+            let derivedName = email.split('@')[0];
+            derivedName = derivedName.charAt(0).toUpperCase() + derivedName.slice(1);
+
+            handleSuccessfulAuth({
+                name: derivedName,
+                email: email,
+                phone: ''
+            }, false);
         });
     }
 
-    // Simulated Register submission
+    // Register Form submission
     if (registerForm) {
         registerForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const name = document.getElementById('reg-name').value || 'Patient';
-            if (authStatusMsg) {
-                authStatusMsg.textContent = `Account created successfully! Welcome to AuraClinic, ${name}.`;
-                authStatusMsg.style.display = 'block';
-                authStatusMsg.style.background = '#ecfdf5';
-                authStatusMsg.style.color = '#065f46';
-                authStatusMsg.style.borderColor = '#a7f3d0';
-            }
-            setTimeout(() => {
-                closeLoginModal();
-            }, 1500);
+            const name = document.getElementById('reg-name')?.value.trim() || 'Patient';
+            const email = document.getElementById('reg-email')?.value.trim() || 'patient@example.com';
+            const phone = document.getElementById('reg-phone')?.value.trim() || '';
+
+            handleSuccessfulAuth({
+                name: name,
+                email: email,
+                phone: phone
+            }, true);
         });
     }
 
-    // AUTO-POPUP LOGIN MODAL WITHIN 30 SECONDS
-    setTimeout(() => {
-        const generalModal = document.getElementById('general-booking-modal');
-        const isBookingActive = generalModal && generalModal.classList.contains('active');
-        // If user is not currently in the middle of booking, show the login popup
-        if (!isLoginModalOpen && !isBookingActive) {
-            openLoginModal();
-        }
-    }, 30000);
+    // Social Auth Buttons (Google & Apple)
+    document.querySelectorAll('.social-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const isApple = btn.textContent.includes('Apple');
+            handleSuccessfulAuth({
+                name: isApple ? 'Apple Patient' : 'Google Patient',
+                email: isApple ? 'patient@icloud.com' : 'patient@gmail.com',
+                phone: ''
+            }, false);
+        });
+    });
+
+    // Initial auth UI synchronization
+    updateAuthUI();
 
     // ==========================================================
     // GENERAL QUESTIONS CONSULTATION & APPOINTMENT BOOKING MODAL
@@ -652,6 +767,17 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isLoginModalOpen) closeLoginModal();
 
         resetBookingModal();
+
+        // Auto pre-fill with authenticated user details
+        const signedUser = getSignedInUser();
+        if (signedUser) {
+            const nameInput = document.getElementById('patient-fullname');
+            const emailInput = document.getElementById('patient-email');
+            const phoneInput = document.getElementById('patient-phone');
+            if (nameInput && signedUser.name && !nameInput.value) nameInput.value = signedUser.name;
+            if (emailInput && signedUser.email && !emailInput.value) emailInput.value = signedUser.email;
+            if (phoneInput && signedUser.phone && !phoneInput.value) phoneInput.value = signedUser.phone;
+        }
 
         if (prefilledDate && prefilledDate instanceof Date && !isNaN(prefilledDate)) {
             const year = prefilledDate.getFullYear();
@@ -760,12 +886,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Attach open buttons to all booking buttons/links across the site
+    // Attach open booking flow to all booking buttons/links across the site
     const allBookingTriggers = document.querySelectorAll('.open-booking-btn, #select-date-btn, a[href="#booking"], button[data-booking]');
     allBookingTriggers.forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
-            openGeneralBookingModal(selectedDate || new Date());
+            handleBookingRequest(selectedDate || new Date());
         });
     });
 

@@ -883,7 +883,7 @@
         </div>
     </footer>
 
-    <!-- LOGIN POPUP MODAL (Pops up automatically in 30s or on-demand) -->
+    <!-- LOGIN POPUP MODAL (Triggered on-demand or when clicking booking while signed out) -->
     <div id="login-modal" class="modal-backdrop-custom" style="display: none;">
         <div class="login-modal-dialog">
             <button class="modal-close-btn" id="close-login-modal" aria-label="Close modal">
@@ -896,6 +896,12 @@
                 </div>
                 <h3 class="login-title">AuraClinic Patient Portal</h3>
                 <p class="login-subtitle">Access your medical history, doctor consultations, and appointment passes.</p>
+            </div>
+
+            <!-- Booking Alert Notice -->
+            <div id="booking-login-alert" class="booking-login-alert" style="display: none;">
+                <i class="ph-fill ph-calendar-check"></i>
+                <span>Please sign in or create an account to book your appointment. You'll be redirected immediately.</span>
             </div>
 
             <!-- Tab Switcher -->
