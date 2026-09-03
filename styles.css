@@ -108,18 +108,18 @@ img {
 /* ==========================================================================
    Reusable Utility Classes
    ========================================================================== */
-.section-white { background-color: var(--bg-white); padding: 96px 0; }
-.section-light-blue { background-color: var(--bg-light-blue); padding: 96px 0; }
-.section-light-mint { background-color: var(--bg-light-mint); padding: 96px 0; }
-.section-light-violet { background-color: var(--bg-light-violet); padding: 96px 0; }
+.section-white { background-color: var(--bg-white); padding: 56px 0; }
+.section-light-blue { background-color: var(--bg-light-blue); padding: 56px 0; }
+.section-light-mint { background-color: var(--bg-light-mint); padding: 56px 0; }
+.section-light-violet { background-color: var(--bg-light-violet); padding: 56px 0; }
 
 .section-header {
-    margin-bottom: 64px;
+    margin-bottom: 32px;
     max-width: 700px;
 }
 
 .section-header.center {
-    margin: 0 auto 64px auto;
+    margin: 0 auto 32px auto;
     text-align: center;
 }
 
@@ -1269,28 +1269,28 @@ html, body {
     .section-light-blue,
     .section-light-mint,
     .section-light-violet {
-        padding: 40px 0 !important;
+        padding: 32px 0 !important;
     }
     
     .section-header.center {
-        margin: 0 auto 28px auto !important;
+        margin: 0 auto 20px auto !important;
     }
     
     .section-title {
-        font-size: 26px !important;
-        margin-bottom: 8px !important;
+        font-size: 24px !important;
+        margin-bottom: 6px !important;
     }
     
     .section-subtitle {
-        font-size: 14px !important;
-        line-height: 1.5 !important;
+        font-size: 13.5px !important;
+        line-height: 1.4 !important;
     }
 
-    .hero { padding-top: 36px !important; }
-    .hero-container { grid-template-columns: 1fr; }
-    .hero-visual { max-width: 500px; margin: 0 auto; }
+    .hero { padding-top: 32px !important; padding-bottom: 20px !important; }
+    .hero-container { grid-template-columns: 1fr; gap: 20px !important; }
+    .hero-visual { max-width: 360px; margin: 0 auto; }
     .hero-buttons { flex-direction: column; }
-    .trust-indicators { flex-wrap: wrap; gap: 16px; }
+    .trust-indicators { flex-wrap: wrap; gap: 14px; margin-top: 20px !important; }
     .trust-divider { display: none; }
     
     .video-grid { grid-template-columns: 1fr; }
@@ -1312,66 +1312,68 @@ html, body {
         justify-content: center !important;
         align-items: center !important;
         overflow: hidden !important;
-        padding: 10px 0 20px !important;
+        padding: 10px 0 16px !important;
         box-sizing: border-box !important;
     }
     
     .why-us-header {
-        margin-bottom: 14px !important;
+        margin-bottom: 12px !important;
     }
     
     .why-us-header .section-title {
-        font-size: 24px !important;
-        margin-bottom: 6px !important;
+        font-size: 22px !important;
+        margin-bottom: 4px !important;
     }
     
     .why-us-header .section-subtitle {
-        font-size: 13px !important;
-        line-height: 1.4 !important;
+        font-size: 12.5px !important;
+        line-height: 1.35 !important;
         max-width: 90% !important;
     }
     
     .features-scroll-track {
-        padding: 0 calc(50vw - 145px) !important;
+        padding: 0 calc(50vw - 135px) !important;
         gap: 12px !important;
-        transform: none !important;
+        transform: none;
         align-items: center !important;
+        transition: none !important;
     }
     
     .features-scroll-track .feature-card {
-        flex: 0 0 285px !important;
-        width: 285px !important;
-        max-width: 285px !important;
-        padding: 18px 16px !important;
-        border-radius: 18px !important;
-        box-shadow: 0 8px 24px -4px rgba(15, 23, 42, 0.08) !important;
+        flex: 0 0 270px !important;
+        width: 270px !important;
+        max-width: 270px !important;
+        padding: 16px 14px !important;
+        border-radius: 16px !important;
+        box-shadow: 0 6px 20px -4px rgba(15, 23, 42, 0.08) !important;
+        transition: box-shadow 0.3s ease, border-color 0.3s ease !important;
     }
     
     .features-scroll-track .feature-card .feature-icon {
-        width: 42px !important;
-        height: 42px !important;
-        font-size: 20px !important;
-        border-radius: 12px !important;
-        margin-bottom: 10px !important;
+        width: 38px !important;
+        height: 38px !important;
+        font-size: 18px !important;
+        border-radius: 10px !important;
+        margin-bottom: 8px !important;
     }
     
     .features-scroll-track .feature-card .feature-title {
-        font-size: 16px !important;
-        margin-bottom: 6px !important;
+        font-size: 15px !important;
+        margin-bottom: 4px !important;
     }
     
     .features-scroll-track .feature-card .feature-text {
-        font-size: 13px !important;
-        line-height: 1.4 !important;
+        font-size: 12.5px !important;
+        line-height: 1.35 !important;
     }
     
     .booking-section-grid {
         grid-template-columns: 1fr !important;
-        gap: 16px !important;
+        gap: 12px !important;
     }
     
     .booking-doodle {
-        max-height: 170px !important;
+        max-height: 150px !important;
         margin-top: 0 !important;
         overflow: hidden !important;
         display: flex !important;
@@ -1380,25 +1382,25 @@ html, body {
     }
     
     .booking-doodle iframe {
-        max-width: 200px !important;
-        max-height: 170px !important;
+        max-width: 180px !important;
+        max-height: 150px !important;
         transform: scale(1) !important;
     }
     
     .booking-header {
         text-align: center !important;
-        margin-bottom: 16px !important;
+        margin-bottom: 12px !important;
     }
     
     .booking-calendar-container {
-        padding: 16px 12px !important;
+        padding: 14px 10px !important;
         border-radius: var(--radius-lg);
     }
     
     .calendar-grid { gap: 4px; }
     
     .marquee-container {
-        margin-top: 20px !important;
+        margin-top: 16px !important;
     }
     
     .selection-grid { grid-template-columns: 1fr; }
@@ -1409,7 +1411,7 @@ html, body {
     .cta-description { font-size: 16px; margin-bottom: 32px; }
     .cta-buttons { flex-direction: column; }
     
-    .footer { padding: 32px 24px 80px; }
+    .footer { padding: 24px 20px 80px !important; }
     .footer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
     .footer-brand { grid-column: span 2; }
     .footer-description { max-width: 100%; margin: 8px 0; font-size: 14px; line-height: 1.4; }
@@ -1664,27 +1666,39 @@ html, body {
 
 .features-scroll-track {
     display: flex;
-    gap: 32px;
+    gap: 28px;
     padding: 0 max(32px, calc((100vw - 1200px) / 2));
     width: max-content; 
     will-change: transform;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
+    transition: none !important;
 }
 .features-scroll-track::-webkit-scrollbar { display: none; }
 .features-scroll-track .feature-card {
-    flex: 0 0 380px;
-    scroll-snap-align: center;
+    flex: 0 0 360px;
     opacity: 1;
     transform: none;
+    transition: box-shadow 0.3s ease, border-color 0.3s ease !important;
 }
 
-#why-us { position: relative; }
-.sticky-wrapper { position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
+#why-us { position: relative; padding: 0 !important; margin: 0 !important; }
+.sticky-wrapper {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    padding: 60px 0 20px;
+    box-sizing: border-box;
+}
 
 html, body { overflow-x: clip; max-width: 100%; }
 
-.why-us-header { margin-bottom: 48px; }
+.why-us-header { margin-bottom: 24px !important; }
 
 .faq-animation { width: 100%; max-width: 450px; transform: scale(1.1); }
 @media (min-width: 769px) { .faq-animation { transform: translateY(-80px) scale(1.1); } }
