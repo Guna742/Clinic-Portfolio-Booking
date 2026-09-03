@@ -558,6 +558,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function getSignedInUser() {
+        try {
+            const data = localStorage.getItem('aura_clinic_user') || localStorage.getItem('auraclinic_patient_profile');
+            return data ? JSON.parse(data) : null;
+        } catch (e) {
+            return null;
+        }
+    }
+
     function isUserSignedIn() {
         return getSignedInUser() !== null;
     }
@@ -565,6 +574,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function setSignedInUser(userData) {
         try {
             localStorage.setItem('aura_clinic_user', JSON.stringify(userData));
+            localStorage.setItem('auraclinic_patient_profile', JSON.stringify(userData));
         } catch (e) {
             console.error('Error saving user data:', e);
         }
@@ -578,6 +588,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error removing user data:', e);
         }
         updateAuthUI();
+        closePatientProfileModal();
     }
 
     function updateAuthUI() {
@@ -585,13 +596,213 @@ document.addEventListener('DOMContentLoaded', () => {
         if (navLoginBtn) {
             if (user) {
                 const displayName = user.name || 'Account';
-                navLoginBtn.innerHTML = `<i class="ph-fill ph-user-circle" style="font-size: 16px;"></i> <span>${displayName}</span> <span id="nav-logout-action" title="Sign Out"><i class="ph ph-sign-out"></i></span>`;
+                navLoginBtn.innerHTML = `<i class="ph-fill ph-user-circle" style="font-size: 16px;"></i> <span>${displayName}</span>`;
                 navLoginBtn.classList.add('logged-in');
             } else {
                 navLoginBtn.innerHTML = `<i class="ph ph-user"></i> Login`;
                 navLoginBtn.classList.remove('logged-in');
             }
         }
+    }
+
+    // ==========================================================
+    // PERSONALIZED PATIENT PROFILE MODAL (Custom UI)
+    // ==========================================================
+    const patientProfileModal = document.getElementById('patient-profile-modal');
+    const closeProfileModalBtn = document.getElementById('close-profile-modal');
+    const profileLogoutBtn = document.getElementById('profile-logout-btn');
+    const profileResetPwdBtn = document.getElementById('profile-reset-pwd-btn');
+
+    function openPatientProfileModal() {
+        const user = getSignedInUser();
+        if (!user || !patientProfileModal) return;
+
+        const name = user.name || 'Patient';
+        const email = user.email || 'patient@example.com';
+        const phone = user.phone || '(555) 000-0000';
+        const age = user.age || 'Not specified';
+
+        // Set Initials
+        const initials = name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'P';
+        const avatarEl = document.getElementById('profile-modal-avatar');
+        if (avatarEl) avatarEl.textContent = initials;
+
+        const nameEl = document.getElementById('profile-modal-name');
+        if (nameEl) nameEl.textContent = name;
+        const emailEl = document.getElementById('profile-modal-email');
+        if (emailEl) emailEl.textContent = email;
+        const phoneEl = document.getElementById('profile-modal-phone');
+        if (phoneEl) phoneEl.textContent = phone;
+        const ageEl = document.getElementById('profile-modal-age');
+        if (ageEl) ageEl.textContent = age;
+
+        patientProfileModal.style.display = 'flex';
+        requestAnimationFrame(() => patientProfileModal.classList.add('active'));
+    }
+
+    function closePatientProfileModal() {
+        if (!patientProfileModal) return;
+        patientProfileModal.classList.remove('active');
+        setTimeout(() => patientProfileModal.style.display = 'none', 300);
+    }
+
+    if (closeProfileModalBtn) {
+        closeProfileModalBtn.addEventListener('click', closePatientProfileModal);
+    }
+
+    if (patientProfileModal) {
+        patientProfileModal.addEventListener('click', (e) => {
+            if (e.target === patientProfileModal) closePatientProfileModal();
+        });
+    }
+
+    if (profileLogoutBtn) {
+        profileLogoutBtn.addEventListener('click', () => {
+            logoutUser();
+        });
+    }
+
+    // ==========================================================
+    // FORGOT / RESET PASSWORD MODAL
+    // ==========================================================
+    const forgotPasswordModal = document.getElementById('forgot-password-modal');
+    const closeForgotPwdModalBtn = document.getElementById('close-forgot-pwd-modal');
+    const openForgotPwdBtn = document.getElementById('open-forgot-pwd-btn');
+    const forgotPasswordForm = document.getElementById('forgot-password-form');
+    const forgotPwdStatus = document.getElementById('forgot-pwd-status');
+
+    function openForgotPasswordModal() {
+        if (!forgotPasswordModal) return;
+        closePatientProfileModal();
+        const user = getSignedInUser();
+        const emailInput = document.getElementById('forgot-email');
+        const typedEmail = document.getElementById('patient-email')?.value.trim();
+        if (emailInput) {
+            emailInput.value = user?.email || typedEmail || '';
+        }
+        if (forgotPwdStatus) forgotPwdStatus.style.display = 'none';
+
+        forgotPasswordModal.style.display = 'flex';
+        requestAnimationFrame(() => forgotPasswordModal.classList.add('active'));
+    }
+
+    function closeForgotPasswordModal() {
+        if (!forgotPasswordModal) return;
+        forgotPasswordModal.classList.remove('active');
+        setTimeout(() => forgotPasswordModal.style.display = 'none', 300);
+    }
+
+    if (openForgotPwdBtn) {
+        openForgotPwdBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            openForgotPasswordModal();
+        });
+    }
+
+    if (profileResetPwdBtn) {
+        profileResetPwdBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            openForgotPasswordModal();
+        });
+    }
+
+    if (closeForgotPwdModalBtn) {
+        closeForgotPwdModalBtn.addEventListener('click', closeForgotPasswordModal);
+    }
+
+    if (forgotPasswordModal) {
+        forgotPasswordModal.addEventListener('click', (e) => {
+            if (e.target === forgotPasswordModal) closeForgotPasswordModal();
+        });
+    }
+
+    if (forgotPasswordForm) {
+        forgotPasswordForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('forgot-email')?.value.trim();
+            const newPassword = document.getElementById('new-password-input')?.value;
+
+            if (!newPassword || newPassword.length < 6) {
+                if (forgotPwdStatus) {
+                    forgotPwdStatus.textContent = 'Password must be at least 6 characters long.';
+                    forgotPwdStatus.style.display = 'block';
+                    forgotPwdStatus.style.background = '#fee2e2';
+                    forgotPwdStatus.style.color = '#dc2626';
+                }
+                return;
+            }
+
+            // Update stored password
+            const user = getSignedInUser() || {};
+            user.email = email || user.email || 'patient@example.com';
+            user.password = newPassword;
+            setSignedInUser(user);
+
+            // Also update input in booking form if open
+            const patientPwdInput = document.getElementById('patient-password');
+            if (patientPwdInput) patientPwdInput.value = newPassword;
+
+            if (forgotPwdStatus) {
+                forgotPwdStatus.textContent = 'Password updated successfully! You can now use your new password.';
+                forgotPwdStatus.style.display = 'block';
+                forgotPwdStatus.style.background = '#ecfdf5';
+                forgotPwdStatus.style.color = '#065f46';
+            }
+
+            setTimeout(() => {
+                closeForgotPasswordModal();
+            }, 1400);
+        });
+    }
+
+    // ==========================================================
+    // AUTOFILL PATIENT DETAILS ON STEP 2 (SCHEDULE & DETAILS)
+    // ==========================================================
+    function autofillPatientDetails() {
+        const user = getSignedInUser();
+        if (!user) return;
+
+        const nameInput = document.getElementById('patient-fullname');
+        const phoneInput = document.getElementById('patient-phone');
+        const emailInput = document.getElementById('patient-email');
+        const ageInput = document.getElementById('patient-age');
+        const passwordInput = document.getElementById('patient-password');
+        const banner = document.getElementById('autofill-profile-banner');
+        const bannerName = document.getElementById('autofill-user-name');
+
+        let filledAny = false;
+        if (user.name && nameInput && !nameInput.value) { nameInput.value = user.name; filledAny = true; }
+        if (user.phone && phoneInput && !phoneInput.value) { phoneInput.value = user.phone; filledAny = true; }
+        if (user.email && emailInput && !emailInput.value) { emailInput.value = user.email; filledAny = true; }
+        if (user.age && ageInput && !ageInput.value) { ageInput.value = user.age; filledAny = true; }
+        if (user.password && passwordInput && !passwordInput.value) { passwordInput.value = user.password; filledAny = true; }
+
+        if (banner && (filledAny || (nameInput && nameInput.value))) {
+            if (bannerName) bannerName.textContent = user.name || 'Patient';
+            banner.style.display = 'flex';
+        }
+    }
+
+    const autofillClearBtn = document.getElementById('autofill-clear-btn');
+    if (autofillClearBtn) {
+        autofillClearBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const nameInput = document.getElementById('patient-fullname');
+            const phoneInput = document.getElementById('patient-phone');
+            const emailInput = document.getElementById('patient-email');
+            const ageInput = document.getElementById('patient-age');
+            const passwordInput = document.getElementById('patient-password');
+            const banner = document.getElementById('autofill-profile-banner');
+
+            if (nameInput) nameInput.value = '';
+            if (phoneInput) phoneInput.value = '';
+            if (emailInput) emailInput.value = '';
+            if (ageInput) ageInput.value = '';
+            if (passwordInput) passwordInput.value = '';
+            if (banner) banner.style.display = 'none';
+
+            if (nameInput) nameInput.focus();
+        });
     }
 
     function openLoginModal(showAlmostThere = false) {
@@ -681,18 +892,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (navLoginBtn) {
         navLoginBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            const logoutTrigger = e.target.closest('#nav-logout-action');
-            if (logoutTrigger) {
-                logoutUser();
-                return;
-            }
-
             if (isUserSignedIn()) {
-                const user = getSignedInUser();
-                const confirmLogout = confirm(`Signed in as ${user?.name || 'Patient'} (${user?.email || ''}).\n\nDo you want to log out?`);
-                if (confirmLogout) {
-                    logoutUser();
-                }
+                openPatientProfileModal(); // Open custom Profile UI instead of browser confirm alert!
                 return;
             }
 
@@ -737,7 +938,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Password visibility toggle
+    // Password visibility toggle on login form
     if (toggleLoginPwd && loginPwdInput) {
         toggleLoginPwd.addEventListener('click', () => {
             const isPassword = loginPwdInput.type === 'password';
@@ -752,13 +953,15 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const emailInput = document.getElementById('login-email');
             const email = emailInput ? emailInput.value.trim() : 'patient@example.com';
+            const pwd = document.getElementById('login-password')?.value || '';
             let derivedName = email.split('@')[0];
             derivedName = derivedName.charAt(0).toUpperCase() + derivedName.slice(1);
 
             handleSuccessfulAuth({
                 name: derivedName,
                 email: email,
-                phone: ''
+                phone: '',
+                password: pwd
             }, false);
         });
     }
@@ -770,11 +973,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const name = document.getElementById('reg-name')?.value.trim() || 'Patient';
             const email = document.getElementById('reg-email')?.value.trim() || 'patient@example.com';
             const phone = document.getElementById('reg-phone')?.value.trim() || '';
+            const pwd = document.getElementById('reg-password')?.value || '';
 
             handleSuccessfulAuth({
                 name: name,
                 email: email,
-                phone: phone
+                phone: phone,
+                password: pwd
             }, true);
         });
     }
@@ -882,17 +1087,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isLoginModalOpen) closeLoginModal();
 
         resetBookingModal();
-
-        // Auto pre-fill with authenticated user contact details if available
-        const signedUser = getSignedInUser();
-        if (signedUser) {
-            const nameInput = document.getElementById('patient-fullname');
-            const emailInput = document.getElementById('patient-email');
-            const phoneInput = document.getElementById('patient-phone');
-            if (nameInput && signedUser.name && !nameInput.value) nameInput.value = signedUser.name;
-            if (emailInput && signedUser.email && !emailInput.value) emailInput.value = signedUser.email;
-            if (phoneInput && signedUser.phone && !phoneInput.value) phoneInput.value = signedUser.phone;
-        }
+        autofillPatientDetails();
 
         if (prefilledDate && prefilledDate instanceof Date && !isNaN(prefilledDate)) {
             const year = prefilledDate.getFullYear();
@@ -937,6 +1132,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         if (stepNumber === 2) {
+            autofillPatientDetails();
             updateBookingSummary();
         }
     }

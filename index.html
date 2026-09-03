@@ -1023,6 +1023,80 @@
         </div>
     </div>
 
+    <!-- PERSONALIZED PATIENT PROFILE & ACCOUNT MODAL (Custom UI) -->
+    <div id="patient-profile-modal" class="modal-backdrop-custom" style="display: none;">
+        <div class="patient-profile-dialog">
+            <button class="modal-close-btn" id="close-profile-modal" aria-label="Close modal">
+                <i class="ph ph-x"></i>
+            </button>
+            <div class="profile-card-header">
+                <div class="profile-avatar-large" id="profile-modal-avatar">JD</div>
+                <h3 class="profile-modal-name" id="profile-modal-name">John Doe</h3>
+                <p class="profile-modal-email" id="profile-modal-email">john@example.com</p>
+                <div class="profile-status-pill">
+                    <span class="status-dot"></span> Verified Patient Account
+                </div>
+            </div>
+            <div class="profile-info-grid">
+                <div class="profile-info-item">
+                    <span class="info-label"><i class="ph ph-phone"></i> Mobile</span>
+                    <strong class="info-value" id="profile-modal-phone">(555) 123-4567</strong>
+                </div>
+                <div class="profile-info-item">
+                    <span class="info-label"><i class="ph ph-user"></i> Age & Gender</span>
+                    <strong class="info-value" id="profile-modal-age">32 / Male</strong>
+                </div>
+            </div>
+            <div class="profile-modal-actions">
+                <button type="button" class="btn btn-outline-secondary" id="profile-reset-pwd-btn" style="width: 100%; justify-content: center; height: 44px; font-weight: 600; border-radius: 9999px; margin-bottom: 10px; border: 1.5px solid #e2e8f0; background: #ffffff; color: #1e293b; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                    <i class="ph ph-key"></i>
+                    <span>Change / Reset Password</span>
+                </button>
+                <button type="button" class="btn btn-danger-soft" id="profile-logout-btn" style="width: 100%; justify-content: center; height: 44px; font-weight: 600; border-radius: 9999px; background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                    <i class="ph ph-sign-out"></i>
+                    <span>Sign Out</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FORGOT / RESET PASSWORD MODAL -->
+    <div id="forgot-password-modal" class="modal-backdrop-custom" style="display: none;">
+        <div class="login-modal-dialog" style="max-width: 440px;">
+            <button class="modal-close-btn" id="close-forgot-pwd-modal" aria-label="Close modal">
+                <i class="ph ph-x"></i>
+            </button>
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div class="almost-there-icon-badge" style="background: #e0e7ff; color: #4338ca;">
+                    <i class="ph-fill ph-key"></i>
+                </div>
+                <h3 style="font-size: 22px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">Reset Password</h3>
+                <p style="font-size: 13.5px; color: #64748b;">Enter your email to set a new password for your patient account.</p>
+            </div>
+            <form id="forgot-password-form">
+                <div class="form-group-custom" style="margin-bottom: 14px;">
+                    <label for="forgot-email" style="font-size: 12.5px; margin-bottom: 4px;">Registered Email Address</label>
+                    <div class="input-with-icon">
+                        <i class="ph ph-envelope-simple"></i>
+                        <input type="email" id="forgot-email" placeholder="patient@example.com" required style="padding: 10px 14px 10px 38px; font-size: 13.5px;">
+                    </div>
+                </div>
+                <div class="form-group-custom" style="margin-bottom: 18px;">
+                    <label for="new-password-input" style="font-size: 12.5px; margin-bottom: 4px;">New Password</label>
+                    <div class="input-with-icon">
+                        <i class="ph ph-lock-key"></i>
+                        <input type="password" id="new-password-input" placeholder="At least 6 characters" required style="padding: 10px 14px 10px 38px; font-size: 13.5px;">
+                    </div>
+                </div>
+                <div id="forgot-pwd-status" style="display: none; padding: 10px; border-radius: 8px; font-size: 13px; margin-bottom: 14px;"></div>
+                <button type="submit" class="btn btn-primary-gradient" style="height: 46px; width: 100%; justify-content: center; font-size: 14.5px; font-weight: 600; border-radius: 9999px;">
+                    <span>Update Password</span>
+                    <i class="ph ph-check-circle"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
     <!-- GENERAL QUESTIONS CONSULTATION & APPOINTMENT BOOKING MODAL -->
     <div id="general-booking-modal" class="modal-backdrop-custom" style="display: none;">
         <div class="booking-modal-dialog">
@@ -1303,6 +1377,15 @@
                         </div>
                     </div>
 
+                    <!-- Auto-fill Profile Banner (Shown when existing user details exist) -->
+                    <div id="autofill-profile-banner" class="autofill-profile-banner" style="display: none;">
+                        <div class="banner-left">
+                            <i class="ph-fill ph-sparkle"></i>
+                            <span>Details auto-filled for <strong id="autofill-user-name">Patient</strong></span>
+                        </div>
+                        <a href="javascript:void(0)" id="autofill-clear-btn" class="banner-clear-link">Clear & Enter New</a>
+                    </div>
+
                     <div class="form-row-2col">
                         <div class="form-group-custom">
                             <label for="patient-fullname">Full Name <span style="color: #ef4444;">*</span></label>
@@ -1325,11 +1408,11 @@
                         </div>
                     </div>
 
-                    <!-- Create Password for Account Login -->
+                    <!-- Create / Manage Password for Account Login -->
                     <div class="form-group-custom">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                            <label for="patient-password" style="margin-bottom: 0;">Create Account Password <span style="color: #ef4444;">*</span></label>
-                            <span style="font-size: 12px; color: #64748b;">(For Patient Portal Login)</span>
+                            <label for="patient-password" id="patient-password-label" style="margin-bottom: 0;">Account Password <span style="color: #ef4444;">*</span></label>
+                            <a href="javascript:void(0)" id="open-forgot-pwd-btn" style="font-size: 12px; color: var(--clr-blue); font-weight: 500; text-decoration: none;">Forgot / Reset Password?</a>
                         </div>
                         <div class="password-field-wrapper" style="position: relative;">
                             <input type="password" id="patient-password" class="custom-input" placeholder="Set a secure password (min. 6 characters)" required style="padding-right: 44px;">
