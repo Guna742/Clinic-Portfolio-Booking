@@ -1874,6 +1874,80 @@ document.addEventListener('DOMContentLoaded', () => {
         finishBookingBtn.addEventListener('click', closeGeneralBookingModal);
     }
 
+    // ==========================================
+    // Direct In-Place Patient Review Video Playback
+    // ==========================================
+    const inlineVideoCards = document.querySelectorAll('.video-card-minimal');
+    const marqueeTracks = document.querySelectorAll('.marquee-track');
+
+    inlineVideoCards.forEach(card => {
+        const video = card.querySelector('.inline-review-video');
+        const playBtn = card.querySelector('.play-btn');
+        if (!video) return;
+
+        card.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            if (video.paused) {
+                // Pause all other videos currently playing
+                inlineVideoCards.forEach(otherCard => {
+                    if (otherCard !== card) {
+                        const otherVideo = otherCard.querySelector('.inline-review-video');
+                        const otherBtn = otherCard.querySelector('.play-btn');
+                        if (otherVideo && !otherVideo.paused) {
+                            otherVideo.pause();
+                            otherCard.classList.remove('is-playing');
+                            if (otherBtn) otherBtn.innerHTML = '<i class="ph-fill ph-play"></i>';
+                        }
+                    }
+                });
+
+                // Play this card's video inline
+                const playPromise = video.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        card.classList.add('is-playing');
+                        if (playBtn) playBtn.innerHTML = '<i class="ph-fill ph-pause"></i>';
+                        marqueeTracks.forEach(t => t.classList.add('is-playing-paused'));
+                    }).catch(err => {
+                        console.log('Playback error:', err);
+                    });
+                }
+            } else {
+                // Pause the video
+                video.pause();
+                card.classList.remove('is-playing');
+                if (playBtn) playBtn.innerHTML = '<i class="ph-fill ph-play"></i>';
+                
+                // Check if any other video is still playing
+                const anyPlaying = Array.from(inlineVideoCards).some(c => {
+                    const v = c.querySelector('.inline-review-video');
+                    return v && !v.paused;
+                });
+                if (!anyPlaying) {
+                    marqueeTracks.forEach(t => t.classList.remove('is-playing-paused'));
+                }
+            }
+        });
+
+        video.addEventListener('ended', () => {
+            card.classList.remove('is-playing');
+            if (playBtn) playBtn.innerHTML = '<i class="ph-fill ph-play"></i>';
+            const anyPlaying = Array.from(inlineVideoCards).some(c => {
+                const v = c.querySelector('.inline-review-video');
+                return v && !v.paused;
+            });
+            if (!anyPlaying) {
+                marqueeTracks.forEach(t => t.classList.remove('is-playing-paused'));
+            }
+        });
+
+        video.addEventListener('pause', () => {
+            card.classList.remove('is-playing');
+            if (playBtn) playBtn.innerHTML = '<i class="ph-fill ph-play"></i>';
+        });
+    });
+
     // Global ESC key listener to close modals
     window.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
