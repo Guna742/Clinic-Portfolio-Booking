@@ -805,20 +805,69 @@
         </div>
     </section>
 
-    <!-- SECTION 9: APPOINTMENT CTA -->
-    <section class="cta-section">
-        <div class="cta-background"></div>
-        <div class="container cta-container">
-            <div class="cta-content">
-                <div class="cta-badge">
-                    <i class="ph-fill ph-star"></i> Premium Care
+    <!-- SECTION 9: APPOINTMENT CTA (DARK GLOW ATMOSPHERIC DESIGN) -->
+    <section class="dark-glow-cta-section" id="premium-cta">
+        <!-- Volumetric Ambient Light Shafts & Glow Effects -->
+        <div class="ambient-glow-wrapper">
+            <div class="glow-spotlight-top"></div>
+            <div class="glow-beam-left"></div>
+            <div class="glow-beam-right"></div>
+            <div class="glow-radial-core"></div>
+            <div class="ambient-grid-overlay"></div>
+        </div>
+
+        <div class="container dark-glow-cta-container">
+            <div class="dark-glow-cta-inner">
+                <!-- Status Pill Badge -->
+                <div class="cta-status-pill">
+                    <span class="status-pulse-dot"></span>
+                    <span class="status-pill-primary">Premium Care</span>
+                    <span class="status-pill-divider"></span>
+                    <span class="status-pill-sub">Accepting Appointments</span>
                 </div>
-                <h2 class="cta-title">Your Health Deserves Exceptional Care.</h2>
-                <p class="cta-description">Take the first step toward better health. Schedule your appointment with our
-                    experienced medical team today.</p>
-                <div class="cta-buttons">
-                    <button class="btn btn-white btn-lg text-blue open-booking-btn">Book an Appointment</button>
-                    <button class="btn btn-outline-white btn-lg">Call the Clinic</button>
+
+                <!-- Main Heading with Focus Box -->
+                <h2 class="dark-glow-cta-title">
+                    Your Health Deserves<br>
+                    <span class="focus-bracket-box">
+                        <span class="focus-corner corner-tl"></span>
+                        <span class="focus-corner corner-tr"></span>
+                        <span class="focus-corner corner-bl"></span>
+                        <span class="focus-corner corner-br"></span>
+                        Exceptional Care.
+                    </span>
+                </h2>
+
+                <!-- Subtitle Description -->
+                <p class="dark-glow-cta-desc">
+                    Take the first step toward better health. Schedule your appointment with our experienced medical team today.
+                </p>
+
+                <!-- Dual Action Pill Buttons -->
+                <div class="dark-glow-cta-actions">
+                    <button type="button" class="cta-pill-btn-white open-booking-btn">
+                        <span>Book an Appointment</span>
+                        <i class="ph ph-arrow-up-right"></i>
+                    </button>
+                    <a href="tel:+15551234567" class="cta-pill-btn-glass">
+                        <span>Call the Clinic</span>
+                        <i class="ph ph-phone-call"></i>
+                    </a>
+                </div>
+
+                <!-- Interactive Rotating Badge -->
+                <div class="floating-rotating-badge" aria-hidden="true">
+                    <svg viewBox="0 0 100 100" class="rotating-text-svg">
+                        <path id="circlePath" d="M 50, 50 m -37, 0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0" fill="transparent" />
+                        <text font-size="9" fill="rgba(255,255,255,0.7)" font-weight="600" letter-spacing="2.2">
+                            <textPath href="#circlePath" startOffset="0%">
+                                • SCHEDULE APPOINTMENT • AURACLINIC •
+                            </textPath>
+                        </text>
+                    </svg>
+                    <div class="rotating-badge-center">
+                        <i class="ph ph-plus"></i>
+                    </div>
                 </div>
             </div>
         </div>
