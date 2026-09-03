@@ -812,6 +812,259 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // ==========================================================
+    // MEDICAL SERVICES DETAILS MODAL
+    // ==========================================================
+    const SERVICES_DATA = {
+        'general-medicine': {
+            title: 'General Medicine',
+            tag: 'Primary Care & Diagnostics',
+            subtitle: 'Comprehensive evaluation & acute illness treatment',
+            icon: 'ph-duotone ph-pill',
+            iconBg: 'var(--grad-blue-teal)',
+            deptVal: 'General Physician & Family Medicine',
+            desc: 'General Medicine focuses on comprehensive health evaluations, clinical diagnostics, and holistic treatment for everyday illnesses, viral infections, metabolic disorders, and chronic disease management.',
+            treatments: [
+                'Full Blood & Metabolic Panels',
+                'Acute Fever & Infection Management',
+                'Hypertension & Diabetes Control',
+                'Preventive Immunizations & Boosters',
+                'Digestive & Respiratory Health',
+                'Prescription Review & Specialist Referrals'
+            ],
+            specialists: [
+                { name: 'Dr. Marcus Vance', title: 'Senior Physician • 12+ yrs experience', initials: 'MV' },
+                { name: 'Dr. Sarah Jenkins', title: 'Chief Medical Consultant • 15+ yrs experience', initials: 'SJ' }
+            ]
+        },
+        'family-medicine': {
+            title: 'Family Medicine',
+            tag: 'Comprehensive Family Care',
+            subtitle: 'Holistic healthcare across all generations',
+            icon: 'ph-duotone ph-users',
+            iconBg: 'linear-gradient(135deg, #0d9488 0%, #06b6d4 100%)',
+            deptVal: 'General Physician & Family Medicine',
+            desc: 'Family Medicine delivers continuous, relationship-based healthcare for every stage of life. From infant wellness checkups to geriatric care, we keep your entire family in optimal health.',
+            treatments: [
+                'Whole-Family Annual Health Checkups',
+                'Childhood & Adult Vaccinations',
+                'Nutrition, Diet & Lifestyle Coaching',
+                'Routine Chronic Condition Management',
+                'Preventive Cardiovascular Screenings',
+                'Holistic Mental Health & Stress Care'
+            ],
+            specialists: [
+                { name: 'Dr. Marcus Vance', title: 'Family Healthcare Specialist • 12+ yrs experience', initials: 'MV' },
+                { name: 'Dr. David Ross', title: 'Pediatric & Family Consultant • 14+ yrs experience', initials: 'DR' }
+            ]
+        },
+        'pediatrics': {
+            title: 'Pediatrics & Child Care',
+            tag: 'Specialized Child Health',
+            subtitle: 'Gentle, compassionate pediatric excellence',
+            icon: 'ph-duotone ph-baby',
+            iconBg: 'linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)',
+            deptVal: 'Pediatrics & Child Care',
+            desc: 'Pediatrics is dedicated to nurturing your child\'s health from newborn days through adolescence. Our gentle pediatric specialists ensure cheerful visits and thorough developmental care.',
+            treatments: [
+                'Newborn & Infant Milestone Assessments',
+                'Pediatric Growth & Developmental Screening',
+                'Childhood Immunization & Vaccine Schedules',
+                'Pediatric Asthma & Allergy Management',
+                'Childhood Nutrition & Immunity Support',
+                'School Physicals & Sports Health Clearances'
+            ],
+            specialists: [
+                { name: 'Dr. David Ross', title: 'Lead Pediatric Specialist • 14+ yrs experience', initials: 'DR' },
+                { name: 'First Available Specialist', title: 'Pediatric Care Team', initials: 'AC' }
+            ]
+        },
+        'dermatology': {
+            title: 'Dermatology & Skin Care',
+            tag: 'Clinical & Aesthetic Dermatology',
+            subtitle: 'Advanced medical & cosmetic skin solutions',
+            icon: 'ph-duotone ph-bandaids',
+            iconBg: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)',
+            deptVal: 'Dermatology & Skin Care',
+            desc: 'Our Dermatology department delivers world-class clinical treatments for skin, hair, and nail health, alongside state-of-the-art aesthetic procedures tailored to your unique skin profile.',
+            treatments: [
+                'Acne, Rosacea & Eczema Therapy',
+                'Full-Body Mole Mapping & Skin Cancer Screenings',
+                'Advanced Laser Skin Rejuvenation',
+                'Anti-Aging & Collagen Regeneration',
+                'Hair Restoration & Scalp Treatments',
+                'Custom Medical-Grade Skincare Plans'
+            ],
+            specialists: [
+                { name: 'Dr. Emily Chen', title: 'Board-Certified Dermatologist • 10+ yrs experience', initials: 'EC' },
+                { name: 'First Available Specialist', title: 'Dermatology Specialist Team', initials: 'AC' }
+            ]
+        },
+        'dental-care': {
+            title: 'Dental & Oral Health',
+            tag: 'Preventive & Cosmetic Dentistry',
+            subtitle: 'Premium oral healthcare & smile aesthetics',
+            icon: 'ph-duotone ph-tooth',
+            iconBg: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)',
+            deptVal: 'General Physician & Family Medicine',
+            desc: 'Delivering painless, high-precision dental care in a soothing atmosphere. We utilize digital intraoral scanning and modern restorative dentistry to keep your smile radiant and healthy.',
+            treatments: [
+                'Comprehensive Dental Checkup & Digital X-Rays',
+                'Ultrasonic Scaling, Plaque Removal & Polishing',
+                'Aesthetic Teeth Whitening & Composite Fillings',
+                'Root Canal Therapy & Crown Restorations',
+                'Orthodontic Alignment & Clear Aligners',
+                'Periodontal Gum Health & Deep Cleaning'
+            ],
+            specialists: [
+                { name: 'Dr. Marcus Vance', title: 'Oral & Dental Health Coordinator', initials: 'MV' },
+                { name: 'First Available Specialist', title: 'Lead Dental Surgeon Team', initials: 'AC' }
+            ]
+        },
+        'preventive-care': {
+            title: 'Preventive Care & Longevity',
+            tag: 'Proactive Health & Longevity',
+            subtitle: 'Early detection & personalized vitality plans',
+            icon: 'ph-duotone ph-heartbeat',
+            iconBg: 'linear-gradient(135deg, #ec4899 0%, #f43f5e 100%)',
+            deptVal: 'Cardiology & Heart Care',
+            desc: 'Preventive Care is your shield against potential health risks. Through comprehensive screening panels and personalized health optimization roadmaps, we empower you to live healthier, longer.',
+            treatments: [
+                'Executive Full-Body Diagnostic Screening',
+                'Cardiovascular Stress & ECG Testing',
+                'Advanced Biomarker & Hormone Panels',
+                'Cancer Marker Early Detection Protocols',
+                'Metabolic Rate & Lipid Risk Profiles',
+                'Personalized Longevity & Vitality Blueprint'
+            ],
+            specialists: [
+                { name: 'Dr. Sarah Jenkins', title: 'Chief Cardiologist & Preventive Lead • 15+ yrs', initials: 'SJ' },
+                { name: 'Dr. Marcus Vance', title: 'Senior Preventive Physician • 12+ yrs', initials: 'MV' }
+            ]
+        }
+    };
+
+    const serviceDetailsModal = document.getElementById('service-details-modal');
+    const closeServiceModalBtn = document.getElementById('close-service-modal');
+    const svcModalBackBtn = document.getElementById('svc-modal-back-btn');
+    const svcModalBookBtn = document.getElementById('svc-modal-book-btn');
+    let currentModalServiceId = null;
+
+    function openServiceDetailsModal(serviceId) {
+        const service = SERVICES_DATA[serviceId];
+        if (!service || !serviceDetailsModal) return;
+
+        currentModalServiceId = serviceId;
+
+        const iconBadge = document.getElementById('svc-modal-icon');
+        const tag = document.getElementById('svc-modal-tag');
+        const title = document.getElementById('svc-modal-title');
+        const subtitle = document.getElementById('svc-modal-subtitle');
+        const desc = document.getElementById('svc-modal-desc');
+        const treatmentsContainer = document.getElementById('svc-modal-treatments');
+        const specialistsContainer = document.getElementById('svc-modal-specialists');
+        const bookBtnText = document.getElementById('svc-modal-book-text');
+
+        if (iconBadge) {
+            iconBadge.innerHTML = `<i class="${service.icon}"></i>`;
+            iconBadge.style.background = service.iconBg;
+        }
+        if (tag) tag.textContent = service.tag;
+        if (title) title.textContent = service.title;
+        if (subtitle) subtitle.textContent = service.subtitle;
+        if (desc) desc.textContent = service.desc;
+        if (bookBtnText) bookBtnText.textContent = `Book Appointment for ${service.title}`;
+
+        if (treatmentsContainer) {
+            treatmentsContainer.innerHTML = service.treatments.map(t => `
+                <div class="svc-treatment-item">
+                    <i class="ph-bold ph-check-circle"></i>
+                    <span>${t}</span>
+                </div>
+            `).join('');
+        }
+
+        if (specialistsContainer) {
+            specialistsContainer.innerHTML = service.specialists.map(s => `
+                <div class="svc-specialist-card">
+                    <div class="svc-specialist-left">
+                        <div class="svc-specialist-avatar">${s.initials}</div>
+                        <div class="svc-specialist-info">
+                            <h5>${s.name}</h5>
+                            <p>${s.title}</p>
+                        </div>
+                    </div>
+                    <span style="font-size: 12px; font-weight: 600; color: #10b981; display: flex; align-items: center; gap: 4px;">
+                        <i class="ph-fill ph-circle" style="font-size: 8px;"></i> Available
+                    </span>
+                </div>
+            `).join('');
+        }
+
+        serviceDetailsModal.style.display = 'flex';
+        requestAnimationFrame(() => serviceDetailsModal.classList.add('active'));
+    }
+
+    function closeServiceDetailsModal() {
+        if (!serviceDetailsModal) return;
+        serviceDetailsModal.classList.remove('active');
+        setTimeout(() => serviceDetailsModal.style.display = 'none', 300);
+    }
+
+    // Attach click listeners to all service cards and Learn More buttons
+    document.querySelectorAll('.service-card, .service-link').forEach(elem => {
+        elem.addEventListener('click', (e) => {
+            const serviceId = elem.getAttribute('data-service-id') || elem.closest('.service-card')?.getAttribute('data-service-id');
+            if (serviceId && SERVICES_DATA[serviceId]) {
+                e.preventDefault();
+                e.stopPropagation();
+                openServiceDetailsModal(serviceId);
+            }
+        });
+    });
+
+    if (closeServiceModalBtn) closeServiceModalBtn.addEventListener('click', closeServiceDetailsModal);
+    if (svcModalBackBtn) svcModalBackBtn.addEventListener('click', closeServiceDetailsModal);
+    if (serviceDetailsModal) {
+        serviceDetailsModal.addEventListener('click', (e) => {
+            if (e.target === serviceDetailsModal) closeServiceDetailsModal();
+        });
+    }
+
+    if (svcModalBookBtn) {
+        svcModalBookBtn.addEventListener('click', () => {
+            const service = SERVICES_DATA[currentModalServiceId];
+            closeServiceDetailsModal();
+            handleBookingRequest(new Date());
+
+            // Pre-select department in the booking modal
+            if (service && service.deptVal) {
+                const deptInput = document.getElementById('booking-department');
+                if (deptInput) deptInput.value = service.deptVal;
+
+                const deptDropdown = document.getElementById('department-dropdown');
+                if (deptDropdown) {
+                    const opt = deptDropdown.querySelector(`.dropdown-option[data-value="${service.deptVal}"]`);
+                    if (opt) {
+                        deptDropdown.querySelectorAll('.dropdown-option').forEach(o => o.classList.remove('active'));
+                        opt.classList.add('active');
+                        const selectedValContainer = deptDropdown.querySelector('.selected-value');
+                        const icon = opt.querySelector('.opt-icon') ? opt.querySelector('.opt-icon').cloneNode(true) : null;
+                        const title = opt.querySelector('.opt-title')?.textContent || service.deptVal;
+                        if (selectedValContainer) {
+                            selectedValContainer.innerHTML = '';
+                            if (icon) selectedValContainer.appendChild(icon);
+                            const textSpan = document.createElement('span');
+                            textSpan.className = 'opt-text';
+                            textSpan.textContent = title;
+                            selectedValContainer.appendChild(textSpan);
+                        }
+                    }
+                }
+            }
+        });
+    }
+
     function openLoginModal(showAlmostThere = false) {
         if (!loginModal) return;
         

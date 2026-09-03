@@ -274,47 +274,47 @@
             </div>
 
             <div class="services-grid">
-                <div class="service-card">
+                <div class="service-card" data-service-id="general-medicine" style="cursor: pointer;">
                     <div class="service-icon text-blue"><i class="ph ph-pill"></i></div>
                     <h3 class="service-title">General Medicine</h3>
                     <p class="service-text">Comprehensive evaluation and treatment for everyday health concerns and
                         acute illnesses.</p>
-                    <a href="#" class="service-link">Learn More <i class="ph ph-arrow-right"></i></a>
+                    <a href="javascript:void(0)" class="service-link" data-service-id="general-medicine">Learn More <i class="ph ph-arrow-right"></i></a>
                 </div>
-                <div class="service-card">
+                <div class="service-card" data-service-id="family-medicine" style="cursor: pointer;">
                     <div class="service-icon text-teal"><i class="ph ph-users"></i></div>
                     <h3 class="service-title">Family Medicine</h3>
                     <p class="service-text">Holistic healthcare for patients of all ages, ensuring your entire family's
                         well-being.</p>
-                    <a href="#" class="service-link">Learn More <i class="ph ph-arrow-right"></i></a>
+                    <a href="javascript:void(0)" class="service-link" data-service-id="family-medicine">Learn More <i class="ph ph-arrow-right"></i></a>
                 </div>
-                <div class="service-card">
+                <div class="service-card" data-service-id="pediatrics" style="cursor: pointer;">
                     <div class="service-icon text-violet"><i class="ph ph-baby"></i></div>
                     <h3 class="service-title">Pediatrics</h3>
                     <p class="service-text">Specialized, gentle care for infants, children, and adolescents by expert
                         pediatricians.</p>
-                    <a href="#" class="service-link">Learn More <i class="ph ph-arrow-right"></i></a>
+                    <a href="javascript:void(0)" class="service-link" data-service-id="pediatrics">Learn More <i class="ph ph-arrow-right"></i></a>
                 </div>
-                <div class="service-card">
+                <div class="service-card" data-service-id="dermatology" style="cursor: pointer;">
                     <div class="service-icon text-blue"><i class="ph ph-bandaids"></i></div>
                     <h3 class="service-title">Dermatology</h3>
                     <p class="service-text">Advanced medical and cosmetic skin care solutions tailored to your skin
                         type.</p>
-                    <a href="#" class="service-link">Learn More <i class="ph ph-arrow-right"></i></a>
+                    <a href="javascript:void(0)" class="service-link" data-service-id="dermatology">Learn More <i class="ph ph-arrow-right"></i></a>
                 </div>
-                <div class="service-card">
+                <div class="service-card" data-service-id="dental-care" style="cursor: pointer;">
                     <div class="service-icon text-teal"><i class="ph ph-tooth"></i></div>
                     <h3 class="service-title">Dental Care</h3>
                     <p class="service-text">Premium dental services from routine checkups to complex cosmetic
                         procedures.</p>
-                    <a href="#" class="service-link">Learn More <i class="ph ph-arrow-right"></i></a>
+                    <a href="javascript:void(0)" class="service-link" data-service-id="dental-care">Learn More <i class="ph ph-arrow-right"></i></a>
                 </div>
-                <div class="service-card">
+                <div class="service-card" data-service-id="preventive-care" style="cursor: pointer;">
                     <div class="service-icon text-violet"><i class="ph ph-heartbeat"></i></div>
                     <h3 class="service-title">Preventive Care</h3>
                     <p class="service-text">Proactive health screenings and personalized wellness plans to keep you at
                         your best.</p>
-                    <a href="#" class="service-link">Learn More <i class="ph ph-arrow-right"></i></a>
+                    <a href="javascript:void(0)" class="service-link" data-service-id="preventive-care">Learn More <i class="ph ph-arrow-right"></i></a>
                 </div>
             </div>
         </div>
@@ -1094,6 +1094,54 @@
                     <i class="ph ph-check-circle"></i>
                 </button>
             </form>
+        </div>
+    </div>
+
+    <!-- MEDICAL SERVICE DETAILS POPUP MODAL -->
+    <div id="service-details-modal" class="modal-backdrop-custom" style="display: none;">
+        <div class="service-details-dialog">
+            <button class="modal-close-btn" id="close-service-modal" aria-label="Close modal">
+                <i class="ph ph-x"></i>
+            </button>
+            <div class="service-modal-header">
+                <div class="service-modal-icon-badge" id="svc-modal-icon">
+                    <i class="ph-duotone ph-pill"></i>
+                </div>
+                <div>
+                    <div class="service-category-tag" id="svc-modal-tag">Specialized Medical Care</div>
+                    <h3 class="service-modal-title" id="svc-modal-title">General Medicine</h3>
+                    <p class="service-modal-subtitle" id="svc-modal-subtitle">Primary healthcare, diagnostics & acute care</p>
+                </div>
+            </div>
+
+            <div class="service-modal-body">
+                <div class="service-modal-overview">
+                    <h4 class="svc-section-heading"><i class="ph-duotone ph-info" style="color: #2563eb;"></i> Overview & Care Scope</h4>
+                    <p id="svc-modal-desc" class="svc-desc-text">Comprehensive evaluation and treatments tailored for everyday health concerns, acute illnesses, fever, infections, metabolic disorders, and chronic condition management.</p>
+                </div>
+
+                <div class="service-modal-treatments">
+                    <h4 class="svc-section-heading"><i class="ph-duotone ph-check-circle" style="color: #10b981;"></i> Key Treatments & Diagnostics</h4>
+                    <div class="svc-treatments-grid" id="svc-modal-treatments">
+                        <!-- Injected via JS -->
+                    </div>
+                </div>
+
+                <div class="service-modal-specialists">
+                    <h4 class="svc-section-heading"><i class="ph-duotone ph-stethoscope" style="color: #6366f1;"></i> Lead Specialists Available</h4>
+                    <div class="svc-specialists-list" id="svc-modal-specialists">
+                        <!-- Injected via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="service-modal-footer">
+                <button type="button" class="btn btn-outline-secondary" id="svc-modal-back-btn" style="height: 46px; border-radius: 9999px; font-weight: 600; padding: 0 22px; border: 1.5px solid #cbd5e1; background: #ffffff; color: #475569; cursor: pointer;">Close</button>
+                <button type="button" class="btn btn-primary-gradient" id="svc-modal-book-btn" style="height: 46px; border-radius: 9999px; font-weight: 600; padding: 0 26px; display: flex; align-items: center; gap: 8px; box-shadow: 0 10px 25px -4px rgba(37, 99, 235, 0.35); cursor: pointer;">
+                    <i class="ph-bold ph-calendar-plus"></i>
+                    <span id="svc-modal-book-text">Book Appointment for This Service</span>
+                </button>
+            </div>
         </div>
     </div>
 
