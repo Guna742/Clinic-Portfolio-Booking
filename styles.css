@@ -1233,10 +1233,153 @@ img {
     margin-bottom: 48px;
 }
 
+/* Liquid Glass CTA Buttons */
 .cta-buttons {
     display: flex;
     justify-content: center;
-    gap: 16px;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+/* Primary Liquid Glass Button */
+.btn-liquid-glass-primary {
+    position: relative;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(240, 246, 255, 0.9) 100%);
+    color: #1e3a8a !important;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 16px 36px;
+    border-radius: 9999px;
+    border: 1.5px solid rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 
+        0 12px 32px -4px rgba(15, 23, 42, 0.25),
+        0 4px 12px rgba(37, 99, 235, 0.2),
+        inset 0 2px 4px rgba(255, 255, 255, 1),
+        inset 0 -2px 4px rgba(191, 219, 254, 0.5);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+    overflow: hidden;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    letter-spacing: -0.01em;
+}
+
+/* Liquid specular highlight shine sweep */
+.btn-liquid-glass-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+    transform: skewX(-25deg);
+    transition: left 0.75s ease;
+    pointer-events: none;
+}
+
+.btn-liquid-glass-primary:hover {
+    transform: translateY(-3px) scale(1.02);
+    background: #ffffff;
+    box-shadow: 
+        0 20px 40px -6px rgba(15, 23, 42, 0.35),
+        0 8px 20px rgba(37, 99, 235, 0.35),
+        inset 0 2px 4px rgba(255, 255, 255, 1),
+        inset 0 -2px 4px rgba(147, 197, 253, 0.6);
+    color: #1d4ed8 !important;
+}
+
+.btn-liquid-glass-primary:hover::before {
+    left: 180%;
+}
+
+.btn-liquid-glass-primary:active {
+    transform: translateY(-1px) scale(0.99);
+}
+
+.btn-liquid-glass-primary i {
+    font-size: 19px;
+    color: #2563eb;
+    transition: transform 0.25s ease;
+}
+
+.btn-liquid-glass-primary:hover i {
+    transform: scale(1.15) rotate(-5deg);
+}
+
+/* Secondary Frosted Liquid Glass Button */
+.btn-liquid-glass-secondary {
+    position: relative;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.06) 100%);
+    color: #ffffff !important;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 16px 34px;
+    border-radius: 9999px;
+    border: 1.5px solid rgba(255, 255, 255, 0.38);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    box-shadow: 
+        0 10px 28px -4px rgba(0, 0, 0, 0.2),
+        inset 0 1.5px 1px rgba(255, 255, 255, 0.45),
+        inset 0 -1.5px 1px rgba(0, 0, 0, 0.15);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+    overflow: hidden;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    letter-spacing: -0.01em;
+}
+
+.btn-liquid-glass-secondary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transform: skewX(-25deg);
+    transition: left 0.75s ease;
+    pointer-events: none;
+}
+
+.btn-liquid-glass-secondary:hover {
+    transform: translateY(-3px) scale(1.02);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.12) 100%);
+    border-color: rgba(255, 255, 255, 0.7);
+    box-shadow: 
+        0 16px 36px -4px rgba(0, 0, 0, 0.3),
+        0 0 25px rgba(255, 255, 255, 0.2),
+        inset 0 2px 2px rgba(255, 255, 255, 0.6);
+    color: #ffffff !important;
+}
+
+.btn-liquid-glass-secondary:hover::before {
+    left: 180%;
+}
+
+.btn-liquid-glass-secondary:active {
+    transform: translateY(-1px) scale(0.99);
+}
+
+.btn-liquid-glass-secondary i {
+    font-size: 19px;
+    color: rgba(255, 255, 255, 0.95);
+    transition: transform 0.25s ease;
+}
+
+.btn-liquid-glass-secondary:hover i {
+    transform: scale(1.15) rotate(10deg);
 }
 
 /* ==========================================================================
