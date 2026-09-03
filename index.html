@@ -1019,7 +1019,7 @@
                 <i class="ph ph-x"></i>
             </button>
 
-            <!-- Stepper Indicator -->
+            <!-- Stepper Indicator (2 Steps) -->
             <div class="booking-stepper">
                 <div class="step-indicator active" id="stepper-indicator-1">
                     <span class="step-num">1</span>
@@ -1028,11 +1028,6 @@
                 <div class="step-line"></div>
                 <div class="step-indicator" id="stepper-indicator-2">
                     <span class="step-num">2</span>
-                    <span class="step-text">General Questions</span>
-                </div>
-                <div class="step-line"></div>
-                <div class="step-indicator" id="stepper-indicator-3">
-                    <span class="step-num">3</span>
                     <span class="step-text">Schedule & Details</span>
                 </div>
             </div>
@@ -1068,109 +1063,158 @@
                         </label>
                     </div>
 
+                    <!-- Custom Dropdown: Department / Specialty -->
                     <div class="form-group-custom" style="margin-top: 20px;">
-                        <label for="booking-department">Medical Department / Specialty *</label>
-                        <select id="booking-department" class="custom-select" required>
-                            <option value="" disabled selected>Select Medical Department</option>
-                            <option value="General Physician & Family Medicine">🩺 General Physician & Family Medicine</option>
-                            <option value="Cardiology & Heart Care">❤️ Cardiology & Heart Care</option>
-                            <option value="Dermatology & Skin Care">✨ Dermatology & Skin Care</option>
-                            <option value="Pediatrics & Child Health">👶 Pediatrics & Child Health</option>
-                            <option value="Orthopedics & Joint Care">🦴 Orthopedics & Joint Care</option>
-                            <option value="Dental & Oral Health">🦷 Dental & Oral Health</option>
-                            <option value="Neurology & Brain Care">🧠 Neurology & Brain Care</option>
-                            <option value="Psychiatry & Mental Wellness">🌿 Psychiatry & Mental Wellness</option>
-                        </select>
+                        <label>Medical Department / Specialty <span style="color: #ef4444;">*</span></label>
+                        <input type="hidden" id="booking-department" name="department" value="General Physician & Family Medicine" required>
+                        
+                        <div class="custom-dropdown-select" id="department-dropdown">
+                            <div class="dropdown-trigger">
+                                <div class="selected-value">
+                                    <div class="opt-icon bg-blue-light"><i class="ph-duotone ph-stethoscope"></i></div>
+                                    <span class="opt-text">General Physician & Family Medicine</span>
+                                </div>
+                                <i class="ph ph-caret-down caret-icon"></i>
+                            </div>
+                            
+                            <div class="dropdown-menu-custom">
+                                <div class="dropdown-option active" data-value="General Physician & Family Medicine">
+                                    <div class="opt-icon bg-blue-light"><i class="ph-duotone ph-stethoscope"></i></div>
+                                    <div class="opt-details">
+                                        <span class="opt-title">General Physician & Family Medicine</span>
+                                        <span class="opt-sub">Primary health care, routine exams & family diagnostics</span>
+                                    </div>
+                                    <i class="ph ph-check check-icon"></i>
+                                </div>
+                                <div class="dropdown-option" data-value="Cardiology & Heart Care">
+                                    <div class="opt-icon bg-red-light"><i class="ph-duotone ph-heartbeat"></i></div>
+                                    <div class="opt-details">
+                                        <span class="opt-title">Cardiology & Heart Care</span>
+                                        <span class="opt-sub">ECG, cardiovascular health & blood pressure monitoring</span>
+                                    </div>
+                                    <i class="ph ph-check check-icon"></i>
+                                </div>
+                                <div class="dropdown-option" data-value="Dermatology & Skin Care">
+                                    <div class="opt-icon bg-amber-light"><i class="ph-duotone ph-sparkle"></i></div>
+                                    <div class="opt-details">
+                                        <span class="opt-title">Dermatology & Skin Care</span>
+                                        <span class="opt-sub">Skin therapy, acne treatment & aesthetic health</span>
+                                    </div>
+                                    <i class="ph ph-check check-icon"></i>
+                                </div>
+                                <div class="dropdown-option" data-value="Pediatrics & Child Health">
+                                    <div class="opt-icon bg-purple-light"><i class="ph-duotone ph-baby"></i></div>
+                                    <div class="opt-details">
+                                        <span class="opt-title">Pediatrics & Child Health</span>
+                                        <span class="opt-sub">Infant care, child vaccinations & development</span>
+                                    </div>
+                                    <i class="ph ph-check check-icon"></i>
+                                </div>
+                                <div class="dropdown-option" data-value="Orthopedics & Joint Care">
+                                    <div class="opt-icon bg-emerald-light"><i class="ph-duotone ph-bone"></i></div>
+                                    <div class="opt-details">
+                                        <span class="opt-title">Orthopedics & Joint Care</span>
+                                        <span class="opt-sub">Bone injury, arthritis & joint mobility therapy</span>
+                                    </div>
+                                    <i class="ph ph-check check-icon"></i>
+                                </div>
+                                <div class="dropdown-option" data-value="Dental & Oral Health">
+                                    <div class="opt-icon bg-cyan-light"><i class="ph-duotone ph-tooth"></i></div>
+                                    <div class="opt-details">
+                                        <span class="opt-title">Dental & Oral Health</span>
+                                        <span class="opt-sub">Teeth cleaning, whitening, root canals & orthodontic exams</span>
+                                    </div>
+                                    <i class="ph ph-check check-icon"></i>
+                                </div>
+                                <div class="dropdown-option" data-value="Neurology & Brain Care">
+                                    <div class="opt-icon bg-pink-light"><i class="ph-duotone ph-brain"></i></div>
+                                    <div class="opt-details">
+                                        <span class="opt-title">Neurology & Brain Care</span>
+                                        <span class="opt-sub">Headache clinics, nervous system & neurological care</span>
+                                    </div>
+                                    <i class="ph ph-check check-icon"></i>
+                                </div>
+                                <div class="dropdown-option" data-value="Psychiatry & Mental Wellness">
+                                    <div class="opt-icon bg-teal-light"><i class="ph-duotone ph-plant"></i></div>
+                                    <div class="opt-details">
+                                        <span class="opt-title">Psychiatry & Mental Wellness</span>
+                                        <span class="opt-sub">Stress management, anxiety & holistic counseling</span>
+                                    </div>
+                                    <i class="ph ph-check check-icon"></i>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
+                    <!-- Custom Dropdown: Preferred Doctor -->
                     <div class="form-group-custom">
-                        <label for="booking-doctor">Preferred Doctor (Optional)</label>
-                        <select id="booking-doctor" class="custom-select">
-                            <option value="First Available Specialist" selected>First Available Specialist (Fastest)</option>
-                            <option value="Dr. Sarah Jenkins (Cardiology)">Dr. Sarah Jenkins (Chief Cardiologist - 15+ yrs)</option>
-                            <option value="Dr. Marcus Vance (General Medicine)">Dr. Marcus Vance (Senior Physician - 12+ yrs)</option>
-                            <option value="Dr. Emily Chen (Dermatology)">Dr. Emily Chen (Dermatology Specialist - 10+ yrs)</option>
-                            <option value="Dr. David Ross (Pediatrics)">Dr. David Ross (Pediatrics Specialist - 14+ yrs)</option>
-                        </select>
+                        <label>Preferred Doctor (Optional)</label>
+                        <input type="hidden" id="booking-doctor" name="doctor" value="First Available Specialist">
+                        
+                        <div class="custom-dropdown-select" id="doctor-dropdown">
+                            <div class="dropdown-trigger">
+                                <div class="selected-value">
+                                    <div class="opt-icon bg-amber-light"><i class="ph-duotone ph-lightning"></i></div>
+                                    <span class="opt-text">First Available Specialist (Fastest)</span>
+                                </div>
+                                <i class="ph ph-caret-down caret-icon"></i>
+                            </div>
+                            
+                            <div class="dropdown-menu-custom">
+                                <div class="dropdown-option active" data-value="First Available Specialist">
+                                    <div class="opt-icon bg-amber-light"><i class="ph-duotone ph-lightning"></i></div>
+                                    <div class="opt-details">
+                                        <span class="opt-title">First Available Specialist</span>
+                                        <span class="opt-sub">Fastest allocation with on-duty verified specialist</span>
+                                    </div>
+                                    <i class="ph ph-check check-icon"></i>
+                                </div>
+                                <div class="dropdown-option" data-value="Dr. Sarah Jenkins (Cardiology)">
+                                    <div class="opt-icon bg-red-light"><i class="ph-duotone ph-user-circle"></i></div>
+                                    <div class="opt-details">
+                                        <span class="opt-title">Dr. Sarah Jenkins</span>
+                                        <span class="opt-sub">Chief Cardiologist • 15+ years experience</span>
+                                    </div>
+                                    <i class="ph ph-check check-icon"></i>
+                                </div>
+                                <div class="dropdown-option" data-value="Dr. Marcus Vance (General Medicine)">
+                                    <div class="opt-icon bg-blue-light"><i class="ph-duotone ph-user-circle"></i></div>
+                                    <div class="opt-details">
+                                        <span class="opt-title">Dr. Marcus Vance</span>
+                                        <span class="opt-sub">Senior Physician • 12+ years experience</span>
+                                    </div>
+                                    <i class="ph ph-check check-icon"></i>
+                                </div>
+                                <div class="dropdown-option" data-value="Dr. Emily Chen (Dermatology)">
+                                    <div class="opt-icon bg-amber-light"><i class="ph-duotone ph-user-circle"></i></div>
+                                    <div class="opt-details">
+                                        <span class="opt-title">Dr. Emily Chen</span>
+                                        <span class="opt-sub">Dermatology Specialist • 10+ years experience</span>
+                                    </div>
+                                    <i class="ph ph-check check-icon"></i>
+                                </div>
+                                <div class="dropdown-option" data-value="Dr. David Ross (Pediatrics)">
+                                    <div class="opt-icon bg-purple-light"><i class="ph-duotone ph-user-circle"></i></div>
+                                    <div class="opt-details">
+                                        <span class="opt-title">Dr. David Ross</span>
+                                        <span class="opt-sub">Pediatrics Specialist • 14+ years experience</span>
+                                    </div>
+                                    <i class="ph ph-check check-icon"></i>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="step-actions">
                         <div></div>
                         <button type="button" class="btn btn-primary-gradient next-step-btn" data-next="2">
-                            <span>Next: General Questions</span> <i class="ph ph-arrow-right"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- STEP 2: General Questions & Symptoms -->
-                <div class="booking-step-content" id="step-2-content" style="display: none;">
-                    <div class="step-header">
-                        <h3 class="step-title">General Medical Questions</h3>
-                        <p class="step-desc">Help your doctor prepare better by answering a few quick questions.</p>
-                    </div>
-
-                    <div class="form-group-custom">
-                        <label>Primary Reason for Visit / Consultation *</label>
-                        <div class="chips-options-grid" id="reason-chips">
-                            <label class="chip-option active">
-                                <input type="radio" name="visit_reason" value="Routine Health Checkup" checked>
-                                <span>Routine Checkup</span>
-                            </label>
-                            <label class="chip-option">
-                                <input type="radio" name="visit_reason" value="Acute Symptoms / Illness">
-                                <span>Acute Symptoms</span>
-                            </label>
-                            <label class="chip-option">
-                                <input type="radio" name="visit_reason" value="Follow-up Consultation">
-                                <span>Follow-up</span>
-                            </label>
-                            <label class="chip-option">
-                                <input type="radio" name="visit_reason" value="Prescription Renewal">
-                                <span>Prescription Renewal</span>
-                            </label>
-                            <label class="chip-option">
-                                <input type="radio" name="visit_reason" value="Specialist Second Opinion">
-                                <span>Second Opinion</span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="form-group-custom">
-                        <label>Are you a new patient or returning patient? *</label>
-                        <div class="radio-inline-group" id="patient-history-group">
-                            <label class="radio-pill active">
-                                <input type="radio" name="patient_history" value="New Patient" checked>
-                                <span>Yes, I am a New Patient</span>
-                            </label>
-                            <label class="radio-pill">
-                                <input type="radio" name="patient_history" value="Returning Patient">
-                                <span>No, Returning Patient</span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="form-group-custom">
-                        <label for="symptoms-desc">Describe your symptoms or health concerns *</label>
-                        <textarea id="symptoms-desc" rows="3" class="custom-textarea" placeholder="e.g. Mild fever, persistent cough, or general wellness advice..." required></textarea>
-                    </div>
-
-                    <div class="form-group-custom">
-                        <label for="allergies-meds">Any ongoing medications or known allergies? (Optional)</label>
-                        <input type="text" id="allergies-meds" class="custom-input" placeholder="e.g. Penicillin allergy, taking vitamins">
-                    </div>
-
-                    <div class="step-actions">
-                        <button type="button" class="btn btn-outline prev-step-btn" data-prev="1">
-                            <i class="ph ph-arrow-left"></i> <span>Back</span>
-                        </button>
-                        <button type="button" class="btn btn-primary-gradient next-step-btn" data-next="3">
                             <span>Next: Select Schedule</span> <i class="ph ph-arrow-right"></i>
                         </button>
                     </div>
                 </div>
 
-                <!-- STEP 3: Schedule & Patient Details -->
-                <div class="booking-step-content" id="step-3-content" style="display: none;">
+                <!-- STEP 2: Schedule & Patient Details -->
+                <div class="booking-step-content" id="step-2-content" style="display: none;">
                     <div class="step-header">
                         <h3 class="step-title">Preferred Schedule & Patient Details</h3>
                         <p class="step-desc">Pick your convenient date & time and provide contact information.</p>
@@ -1182,19 +1226,63 @@
                             <input type="date" id="booking-date-input" class="custom-input" required>
                         </div>
 
+                        <!-- Custom Dropdown: Preferred Time Slot -->
                         <div class="form-group-custom">
-                            <label for="booking-time-select">Preferred Time Slot *</label>
-                            <select id="booking-time-select" class="custom-select" required>
-                                <option value="" disabled selected>Choose Time Slot</option>
-                                <option value="09:00 AM">09:00 AM (Morning)</option>
-                                <option value="10:00 AM">10:00 AM (Morning)</option>
-                                <option value="11:30 AM">11:30 AM (Morning)</option>
-                                <option value="02:00 PM">02:00 PM (Afternoon)</option>
-                                <option value="03:30 PM">03:30 PM (Afternoon)</option>
-                                <option value="05:00 PM">05:00 PM (Evening)</option>
-                                <option value="06:30 PM">06:30 PM (Evening)</option>
-                                <option value="07:30 PM">07:30 PM (Evening)</option>
-                            </select>
+                            <label>Preferred Time Slot <span style="color: #ef4444;">*</span></label>
+                            <input type="hidden" id="booking-time-select" name="time_slot" value="09:00 AM" required>
+                            
+                            <div class="custom-dropdown-select" id="time-dropdown">
+                                <div class="dropdown-trigger">
+                                    <div class="selected-value">
+                                        <div class="opt-icon bg-blue-light"><i class="ph-duotone ph-clock"></i></div>
+                                        <span class="opt-text">09:00 AM (Morning)</span>
+                                    </div>
+                                    <i class="ph ph-caret-down caret-icon"></i>
+                                </div>
+                                
+                                <div class="dropdown-menu-custom">
+                                    <div class="dropdown-option active" data-value="09:00 AM">
+                                        <div class="opt-icon bg-blue-light"><i class="ph-duotone ph-clock"></i></div>
+                                        <div class="opt-details"><span class="opt-title">09:00 AM</span><span class="opt-sub">Morning slot</span></div>
+                                        <i class="ph ph-check check-icon"></i>
+                                    </div>
+                                    <div class="dropdown-option" data-value="10:00 AM">
+                                        <div class="opt-icon bg-blue-light"><i class="ph-duotone ph-clock"></i></div>
+                                        <div class="opt-details"><span class="opt-title">10:00 AM</span><span class="opt-sub">Morning slot</span></div>
+                                        <i class="ph ph-check check-icon"></i>
+                                    </div>
+                                    <div class="dropdown-option" data-value="11:30 AM">
+                                        <div class="opt-icon bg-blue-light"><i class="ph-duotone ph-clock"></i></div>
+                                        <div class="opt-details"><span class="opt-title">11:30 AM</span><span class="opt-sub">Morning slot</span></div>
+                                        <i class="ph ph-check check-icon"></i>
+                                    </div>
+                                    <div class="dropdown-option" data-value="02:00 PM">
+                                        <div class="opt-icon bg-amber-light"><i class="ph-duotone ph-sun"></i></div>
+                                        <div class="opt-details"><span class="opt-title">02:00 PM</span><span class="opt-sub">Afternoon slot</span></div>
+                                        <i class="ph ph-check check-icon"></i>
+                                    </div>
+                                    <div class="dropdown-option" data-value="03:30 PM">
+                                        <div class="opt-icon bg-amber-light"><i class="ph-duotone ph-sun"></i></div>
+                                        <div class="opt-details"><span class="opt-title">03:30 PM</span><span class="opt-sub">Afternoon slot</span></div>
+                                        <i class="ph ph-check check-icon"></i>
+                                    </div>
+                                    <div class="dropdown-option" data-value="05:00 PM">
+                                        <div class="opt-icon bg-purple-light"><i class="ph-duotone ph-moon-stars"></i></div>
+                                        <div class="opt-details"><span class="opt-title">05:00 PM</span><span class="opt-sub">Evening slot</span></div>
+                                        <i class="ph ph-check check-icon"></i>
+                                    </div>
+                                    <div class="dropdown-option" data-value="06:30 PM">
+                                        <div class="opt-icon bg-purple-light"><i class="ph-duotone ph-moon-stars"></i></div>
+                                        <div class="opt-details"><span class="opt-title">06:30 PM</span><span class="opt-sub">Evening slot</span></div>
+                                        <i class="ph ph-check check-icon"></i>
+                                    </div>
+                                    <div class="dropdown-option" data-value="07:30 PM">
+                                        <div class="opt-icon bg-purple-light"><i class="ph-duotone ph-moon-stars"></i></div>
+                                        <div class="opt-details"><span class="opt-title">07:30 PM</span><span class="opt-sub">Evening slot</span></div>
+                                        <i class="ph ph-check check-icon"></i>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -1235,7 +1323,7 @@
                     </div>
 
                     <div class="step-actions">
-                        <button type="button" class="btn btn-outline prev-step-btn" data-prev="2">
+                        <button type="button" class="btn btn-outline prev-step-btn" data-prev="1">
                             <i class="ph ph-arrow-left"></i> <span>Back</span>
                         </button>
                         <button type="submit" class="btn btn-primary-gradient" id="submit-booking-btn">

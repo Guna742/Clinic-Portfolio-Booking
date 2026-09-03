@@ -813,11 +813,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const step1Content = document.getElementById('step-1-content');
     const step2Content = document.getElementById('step-2-content');
-    const step3Content = document.getElementById('step-3-content');
     const stepIndicators = [
         document.getElementById('stepper-indicator-1'),
-        document.getElementById('stepper-indicator-2'),
-        document.getElementById('stepper-indicator-3')
+        document.getElementById('stepper-indicator-2')
     ];
 
     let currentStep = 1;
@@ -829,6 +827,61 @@ document.addEventListener('DOMContentLoaded', () => {
         bookingDateInput.min = todayStr;
         bookingDateInput.value = todayStr;
     }
+
+    // Custom UI Select Dropdown Initialization
+    function initCustomDropdowns() {
+        document.querySelectorAll('.custom-dropdown-select').forEach(dropdown => {
+            const trigger = dropdown.querySelector('.dropdown-trigger');
+            const options = dropdown.querySelectorAll('.dropdown-option');
+            const hiddenInput = dropdown.parentElement.querySelector('input[type="hidden"]');
+            const selectedValContainer = trigger ? trigger.querySelector('.selected-value') : null;
+
+            if (trigger) {
+                trigger.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    document.querySelectorAll('.custom-dropdown-select.open').forEach(d => {
+                        if (d !== dropdown) d.classList.remove('open');
+                    });
+                    dropdown.classList.toggle('open');
+                });
+            }
+
+            options.forEach(opt => {
+                opt.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const val = opt.getAttribute('data-value');
+                    const icon = opt.querySelector('.opt-icon') ? opt.querySelector('.opt-icon').cloneNode(true) : null;
+                    const title = opt.querySelector('.opt-title') ? opt.querySelector('.opt-title').textContent : val;
+
+                    options.forEach(o => o.classList.remove('active'));
+                    opt.classList.add('active');
+
+                    if (hiddenInput) {
+                        hiddenInput.value = val;
+                        hiddenInput.dispatchEvent(new Event('change'));
+                    }
+
+                    if (selectedValContainer) {
+                        selectedValContainer.innerHTML = '';
+                        if (icon) selectedValContainer.appendChild(icon);
+                        const textSpan = document.createElement('span');
+                        textSpan.className = 'opt-text';
+                        textSpan.textContent = title;
+                        selectedValContainer.appendChild(textSpan);
+                    }
+
+                    dropdown.classList.remove('open');
+                    updateBookingSummary();
+                });
+            });
+        });
+
+        document.addEventListener('click', () => {
+            document.querySelectorAll('.custom-dropdown-select.open').forEach(d => d.classList.remove('open'));
+        });
+    }
+
+    initCustomDropdowns();
 
     function openGeneralBookingModal(prefilledDate = null) {
         if (!generalBookingModal) return;
@@ -877,7 +930,6 @@ document.addEventListener('DOMContentLoaded', () => {
         currentStep = stepNumber;
         if (step1Content) step1Content.style.display = stepNumber === 1 ? 'block' : 'none';
         if (step2Content) step2Content.style.display = stepNumber === 2 ? 'block' : 'none';
-        if (step3Content) step3Content.style.display = stepNumber === 3 ? 'block' : 'none';
 
         stepIndicators.forEach((indicator, idx) => {
             if (!indicator) return;
@@ -891,7 +943,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        if (stepNumber === 3) {
+        if (stepNumber === 2) {
             updateBookingSummary();
         }
     }
@@ -915,24 +967,16 @@ document.addEventListener('DOMContentLoaded', () => {
             if (i === 0) c.classList.add('active');
             else c.classList.remove('active');
         });
-        document.querySelectorAll('#reason-chips .chip-option').forEach((c, i) => {
-            if (i === 0) c.classList.add('active');
-            else c.classList.remove('active');
-        });
-        document.querySelectorAll('#patient-history-group .radio-pill').forEach((c, i) => {
-            if (i === 0) c.classList.add('active');
-            else c.classList.remove('active');
-        });
     }
 
     function updateBookingSummary() {
         const consultType = document.querySelector('input[name="consultation_type"]:checked')?.value || 'In-Person Clinic Visit';
-        const deptSelect = document.getElementById('booking-department');
-        const dept = deptSelect && deptSelect.value ? deptSelect.value : 'General Physician & Family Medicine';
-        const doctorSelect = document.getElementById('booking-doctor');
-        const doctor = doctorSelect ? doctorSelect.value : 'First Available Specialist';
+        const deptInput = document.getElementById('booking-department');
+        const dept = deptInput && deptInput.value ? deptInput.value : 'General Physician & Family Medicine';
+        const doctorInput = document.getElementById('booking-doctor');
+        const doctor = doctorInput && doctorInput.value ? doctorInput.value : 'First Available Specialist';
         const dateVal = bookingDateInput ? bookingDateInput.value : '';
-        const timeVal = document.getElementById('booking-time-select')?.value || 'Selected Slot';
+        const timeVal = document.getElementById('booking-time-select')?.value || '09:00 AM';
 
         const sumType = document.getElementById('sum-type');
         const sumDept = document.getElementById('sum-dept');
@@ -943,7 +987,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (sumDept) sumDept.textContent = dept;
         if (sumDoc) sumDoc.textContent = doctor;
         if (sumSchedule) {
-            if (dateVal && timeVal !== 'Selected Slot') {
+            if (dateVal && timeVal) {
                 const dateObj = new Date(dateVal + 'T00:00:00');
                 const formattedDate = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
                 sumSchedule.textContent = `${formattedDate} at ${timeVal}`;
@@ -983,26 +1027,7 @@ document.addEventListener('DOMContentLoaded', () => {
             card.classList.add('active');
             const radio = card.querySelector('input[type="radio"]');
             if (radio) radio.checked = true;
-        });
-    });
-
-    // Reason Chips Selection
-    document.querySelectorAll('#reason-chips .chip-option').forEach(chip => {
-        chip.addEventListener('click', () => {
-            document.querySelectorAll('#reason-chips .chip-option').forEach(c => c.classList.remove('active'));
-            chip.classList.add('active');
-            const radio = chip.querySelector('input[type="radio"]');
-            if (radio) radio.checked = true;
-        });
-    });
-
-    // Patient History Pills Selection
-    document.querySelectorAll('#patient-history-group .radio-pill').forEach(pill => {
-        pill.addEventListener('click', () => {
-            document.querySelectorAll('#patient-history-group .radio-pill').forEach(p => p.classList.remove('active'));
-            pill.classList.add('active');
-            const radio = pill.querySelector('input[type="radio"]');
-            if (radio) radio.checked = true;
+            updateBookingSummary();
         });
     });
 
@@ -1010,23 +1035,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.next-step-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const nextStep = parseInt(btn.getAttribute('data-next'));
-            if (nextStep === 2) {
-                const deptSelect = document.getElementById('booking-department');
-                if (deptSelect && !deptSelect.value) {
-                    deptSelect.focus();
-                    deptSelect.style.borderColor = '#ef4444';
-                    setTimeout(() => { deptSelect.style.borderColor = '#e2e8f0'; }, 2000);
-                    return;
-                }
-            } else if (nextStep === 3) {
-                const symptomsText = document.getElementById('symptoms-desc');
-                if (symptomsText && !symptomsText.value.trim()) {
-                    symptomsText.focus();
-                    symptomsText.style.borderColor = '#ef4444';
-                    setTimeout(() => { symptomsText.style.borderColor = '#e2e8f0'; }, 2000);
-                    return;
-                }
-            }
             goToStep(nextStep);
         });
     });

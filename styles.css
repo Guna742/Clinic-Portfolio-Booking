@@ -2316,6 +2316,179 @@ html, body { overflow-x: clip; max-width: 100%; }
     color: var(--text-muted);
 }
 
+/* --------------------------------------------------------------------------
+   CUSTOM SELECT DROPDOWN (PREMIUM UI WITH PHOSPHOR ICONS)
+   -------------------------------------------------------------------------- */
+.custom-dropdown-select {
+    position: relative;
+    width: 100%;
+}
+
+.dropdown-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 14px;
+    background: #ffffff;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    user-select: none;
+    min-height: 48px;
+}
+
+.dropdown-trigger:hover {
+    border-color: #93c5fd;
+    background: #f8fafc;
+}
+
+.custom-dropdown-select.open .dropdown-trigger {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+    background: #ffffff;
+}
+
+.dropdown-trigger .selected-value {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    overflow: hidden;
+}
+
+.dropdown-trigger .opt-text {
+    font-size: 14px;
+    font-weight: 500;
+    color: #1e293b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dropdown-trigger .caret-icon {
+    font-size: 16px;
+    color: #64748b;
+    transition: transform 0.25s ease;
+    flex-shrink: 0;
+}
+
+.custom-dropdown-select.open .caret-icon {
+    transform: rotate(180deg);
+    color: #2563eb;
+}
+
+.dropdown-menu-custom {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 20px 45px -10px rgba(15, 23, 42, 0.2), 0 0 0 1px rgba(226, 232, 240, 0.8);
+    z-index: 1000;
+    max-height: 280px;
+    overflow-y: auto;
+    padding: 6px;
+    display: none;
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+.dropdown-menu-custom::-webkit-scrollbar {
+    width: 5px;
+}
+
+.dropdown-menu-custom::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 9999px;
+}
+
+.custom-dropdown-select.open .dropdown-menu-custom {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.dropdown-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    position: relative;
+}
+
+.dropdown-option:hover {
+    background: #f1f5f9;
+}
+
+.dropdown-option.active {
+    background: #eff6ff;
+}
+
+.dropdown-option .opt-details {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    text-align: left;
+}
+
+.dropdown-option .opt-title {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.dropdown-option.active .opt-title {
+    color: #1d4ed8;
+}
+
+.dropdown-option .opt-sub {
+    font-size: 11.5px;
+    color: #64748b;
+    line-height: 1.3;
+}
+
+.dropdown-option .check-icon {
+    font-size: 16px;
+    color: #2563eb;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    flex-shrink: 0;
+}
+
+.dropdown-option.active .check-icon {
+    opacity: 1;
+}
+
+/* Icon Badges */
+.opt-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.bg-blue-light { background: #dbeafe; color: #2563eb; }
+.bg-red-light { background: #fee2e2; color: #ef4444; }
+.bg-amber-light { background: #fef3c7; color: #d97706; }
+.bg-purple-light { background: #ede9fe; color: #7c3aed; }
+.bg-emerald-light { background: #d1fae5; color: #059669; }
+.bg-cyan-light { background: #cffafe; color: #0891b2; }
+.bg-pink-light { background: #fce7f3; color: #db2777; }
+.bg-teal-light { background: #ccfbf1; color: #0d9488; }
+
 /* Consultation Types Grid */
 .consultation-types-grid {
     display: grid;
