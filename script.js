@@ -336,12 +336,32 @@ document.addEventListener('DOMContentLoaded', () => {
     if (whyUsSection && whyUsTrack) {
         let ticking = false;
         
+        const calculateMaxTranslate = () => {
+            const firstCard = whyUsTrack.querySelector('.feature-card:first-child');
+            const lastCard = whyUsTrack.querySelector('.feature-card:last-child');
+            
+            if (!firstCard || !lastCard) return 0;
+            
+            const firstCardLeft = firstCard.offsetLeft;
+            const lastCardRight = lastCard.offsetLeft + lastCard.offsetWidth;
+            const targetRightEdge = window.innerWidth - firstCardLeft;
+            const maxTranslate = Math.max(0, lastCardRight - targetRightEdge);
+            
+            return maxTranslate;
+        };
+
         const updateScroll = () => {
+            const maxTranslate = calculateMaxTranslate();
+            if (maxTranslate <= 0) {
+                whyUsTrack.style.transform = 'translate3d(0px, 0, 0)';
+                ticking = false;
+                return;
+            }
+            
             const rect = whyUsSection.getBoundingClientRect();
             const totalScrollLength = whyUsSection.offsetHeight - window.innerHeight;
-            const maxTranslate = whyUsTrack.scrollWidth - window.innerWidth;
             
-            if (maxTranslate <= 0 || totalScrollLength <= 0) {
+            if (totalScrollLength <= 0) {
                 whyUsTrack.style.transform = 'translate3d(0px, 0, 0)';
                 ticking = false;
                 return;
@@ -360,7 +380,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         const setSectionHeight = () => {
-            const maxTranslate = whyUsTrack.scrollWidth - window.innerWidth;
+            const maxTranslate = calculateMaxTranslate();
             if (maxTranslate > 0) {
                 whyUsSection.style.height = `${window.innerHeight + maxTranslate}px`;
             } else {
