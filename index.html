@@ -935,12 +935,6 @@
                     <span>Please sign in or create an account to book your appointment.</span>
                 </div>
 
-                <!-- Tab Switcher -->
-                <div class="auth-tabs">
-                    <button class="auth-tab active" id="tab-login" type="button">Sign In</button>
-                    <button class="auth-tab" id="tab-register" type="button">Create Account</button>
-                </div>
-
                 <!-- Login Form -->
                 <form id="login-form" class="auth-form">
                     <div class="form-group-custom">
@@ -987,6 +981,11 @@
                             <i class="ph ph-apple-logo"></i> Apple
                         </button>
                     </div>
+
+                    <div class="auth-footer-switch">
+                        <span>Don't have an account?</span>
+                        <a href="javascript:void(0)" id="switch-to-register" class="auth-switch-link">Create one</a>
+                    </div>
                 </form>
 
                 <!-- Register Form -->
@@ -1027,6 +1026,11 @@
                         <span>Create Patient Account</span>
                         <i class="ph ph-check-circle"></i>
                     </button>
+
+                    <div class="auth-footer-switch">
+                        <span>Already have an account?</span>
+                        <a href="javascript:void(0)" id="switch-to-login" class="auth-switch-link">Sign In</a>
+                    </div>
                 </form>
 
                 <!-- Notification / Status Banner -->

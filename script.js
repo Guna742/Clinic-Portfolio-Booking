@@ -537,8 +537,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const almostThereContinueBtn = document.getElementById('almost-there-continue-btn');
     const navLoginBtn = document.getElementById('nav-login-btn');
     const closeLoginBtn = document.getElementById('close-login-modal');
-    const tabLogin = document.getElementById('tab-login');
-    const tabRegister = document.getElementById('tab-register');
+    const switchToRegister = document.getElementById('switch-to-register');
+    const switchToLogin = document.getElementById('switch-to-login');
     const loginForm = document.getElementById('login-form');
     const registerForm = document.getElementById('register-form');
     const toggleLoginPwd = document.getElementById('toggle-login-pwd');
@@ -631,9 +631,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (almostThereView) almostThereView.style.display = 'none';
             if (authFormsView) authFormsView.style.display = 'block';
             if (bookingLoginAlert) bookingLoginAlert.style.display = 'flex';
-            if (tabLogin && tabRegister && loginForm && registerForm) {
-                tabLogin.classList.add('active');
-                tabRegister.classList.remove('active');
+            if (loginForm && registerForm) {
                 loginForm.style.display = 'block';
                 registerForm.style.display = 'none';
             }
@@ -723,22 +721,26 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Tab switcher between Sign In and Create Account
-    if (tabLogin && tabRegister && loginForm && registerForm) {
-        tabLogin.addEventListener('click', () => {
-            tabLogin.classList.add('active');
-            tabRegister.classList.remove('active');
-            loginForm.style.display = 'block';
-            registerForm.style.display = 'none';
-            if (authStatusMsg) authStatusMsg.style.display = 'none';
-        });
-
-        tabRegister.addEventListener('click', () => {
-            tabRegister.classList.add('active');
-            tabLogin.classList.remove('active');
+    // Switch between Sign In and Create Account via bottom links
+    if (switchToRegister && loginForm && registerForm) {
+        switchToRegister.addEventListener('click', (e) => {
+            e.preventDefault();
             loginForm.style.display = 'none';
             registerForm.style.display = 'block';
             if (authStatusMsg) authStatusMsg.style.display = 'none';
+            const nameInput = document.getElementById('reg-name');
+            if (nameInput) setTimeout(() => nameInput.focus(), 100);
+        });
+    }
+
+    if (switchToLogin && loginForm && registerForm) {
+        switchToLogin.addEventListener('click', (e) => {
+            e.preventDefault();
+            registerForm.style.display = 'none';
+            loginForm.style.display = 'block';
+            if (authStatusMsg) authStatusMsg.style.display = 'none';
+            const emailInput = document.getElementById('login-email');
+            if (emailInput) setTimeout(() => emailInput.focus(), 100);
         });
     }
 
