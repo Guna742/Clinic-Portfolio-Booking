@@ -420,23 +420,420 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(updateFooterParallax, 100);
 
     // ==========================================
-    // Navbar Button Scroll Reveal
+    // LOGIN MODAL POPUP & 30-SECOND AUTO-TRIGGER
     // ==========================================
-    const navBtn = document.querySelector('.nav-btn');
-    const testimonialsSection = document.getElementById('testimonials');
-    
-    if (navBtn && testimonialsSection) {
-        const handleScroll = () => {
-            const rect = testimonialsSection.getBoundingClientRect();
-            // Show button when the top of the testimonials section comes into the top 50% of the viewport,
-            // or if the user has scrolled past it.
-            if (rect.top <= window.innerHeight / 2) {
-                navBtn.classList.add('show');
-            } else {
-                navBtn.classList.remove('show');
-            }
-        };
-        window.addEventListener('scroll', handleScroll, { passive: true });
-        handleScroll(); // Check initial state
+    const loginModal = document.getElementById('login-modal');
+    const navLoginBtn = document.getElementById('nav-login-btn');
+    const closeLoginBtn = document.getElementById('close-login-modal');
+    const tabLogin = document.getElementById('tab-login');
+    const tabRegister = document.getElementById('tab-register');
+    const loginForm = document.getElementById('login-form');
+    const registerForm = document.getElementById('register-form');
+    const toggleLoginPwd = document.getElementById('toggle-login-pwd');
+    const loginPwdInput = document.getElementById('login-password');
+    const authStatusMsg = document.getElementById('auth-status-msg');
+
+    let isLoginModalOpen = false;
+
+    function openLoginModal() {
+        if (!loginModal) return;
+        loginModal.style.display = 'flex';
+        requestAnimationFrame(() => {
+            loginModal.classList.add('active');
+            isLoginModalOpen = true;
+        });
     }
+
+    function closeLoginModal() {
+        if (!loginModal) return;
+        loginModal.classList.remove('active');
+        isLoginModalOpen = false;
+        setTimeout(() => {
+            loginModal.style.display = 'none';
+            if (authStatusMsg) authStatusMsg.style.display = 'none';
+        }, 300);
+    }
+
+    if (navLoginBtn) {
+        navLoginBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            openLoginModal();
+        });
+    }
+
+    if (closeLoginBtn) {
+        closeLoginBtn.addEventListener('click', closeLoginModal);
+    }
+
+    if (loginModal) {
+        loginModal.addEventListener('click', (e) => {
+            if (e.target === loginModal) {
+                closeLoginModal();
+            }
+        });
+    }
+
+    // Tab switcher between Sign In and Create Account
+    if (tabLogin && tabRegister && loginForm && registerForm) {
+        tabLogin.addEventListener('click', () => {
+            tabLogin.classList.add('active');
+            tabRegister.classList.remove('active');
+            loginForm.style.display = 'block';
+            registerForm.style.display = 'none';
+            if (authStatusMsg) authStatusMsg.style.display = 'none';
+        });
+
+        tabRegister.addEventListener('click', () => {
+            tabRegister.classList.add('active');
+            tabLogin.classList.remove('active');
+            loginForm.style.display = 'none';
+            registerForm.style.display = 'block';
+            if (authStatusMsg) authStatusMsg.style.display = 'none';
+        });
+    }
+
+    // Password visibility toggle
+    if (toggleLoginPwd && loginPwdInput) {
+        toggleLoginPwd.addEventListener('click', () => {
+            const isPassword = loginPwdInput.type === 'password';
+            loginPwdInput.type = isPassword ? 'text' : 'password';
+            toggleLoginPwd.innerHTML = isPassword ? '<i class="ph ph-eye-slash"></i>' : '<i class="ph ph-eye"></i>';
+        });
+    }
+
+    // Simulated Login submission
+    if (loginForm) {
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            if (authStatusMsg) {
+                authStatusMsg.textContent = `Welcome back! Logged in as ${email}`;
+                authStatusMsg.style.display = 'block';
+                authStatusMsg.style.background = '#ecfdf5';
+                authStatusMsg.style.color = '#065f46';
+                authStatusMsg.style.borderColor = '#a7f3d0';
+            }
+            setTimeout(() => {
+                closeLoginModal();
+            }, 1200);
+        });
+    }
+
+    // Simulated Register submission
+    if (registerForm) {
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('reg-name').value || 'Patient';
+            if (authStatusMsg) {
+                authStatusMsg.textContent = `Account created successfully! Welcome to AuraClinic, ${name}.`;
+                authStatusMsg.style.display = 'block';
+                authStatusMsg.style.background = '#ecfdf5';
+                authStatusMsg.style.color = '#065f46';
+                authStatusMsg.style.borderColor = '#a7f3d0';
+            }
+            setTimeout(() => {
+                closeLoginModal();
+            }, 1500);
+        });
+    }
+
+    // AUTO-POPUP LOGIN MODAL WITHIN 30 SECONDS
+    setTimeout(() => {
+        const generalModal = document.getElementById('general-booking-modal');
+        const isBookingActive = generalModal && generalModal.classList.contains('active');
+        // If user is not currently in the middle of booking, show the login popup
+        if (!isLoginModalOpen && !isBookingActive) {
+            openLoginModal();
+        }
+    }, 30000);
+
+    // ==========================================================
+    // GENERAL QUESTIONS CONSULTATION & APPOINTMENT BOOKING MODAL
+    // ==========================================================
+    const generalBookingModal = document.getElementById('general-booking-modal');
+    const closeGeneralBookingBtn = document.getElementById('close-general-booking-modal');
+    const openBookingBtns = document.querySelectorAll('.open-booking-btn');
+    const comprehensiveBookingForm = document.getElementById('comprehensive-booking-form');
+    const bookingModalSuccess = document.getElementById('booking-modal-success');
+    const finishBookingBtn = document.getElementById('finish-booking-modal-btn');
+
+    const step1Content = document.getElementById('step-1-content');
+    const step2Content = document.getElementById('step-2-content');
+    const step3Content = document.getElementById('step-3-content');
+    const stepIndicators = [
+        document.getElementById('stepper-indicator-1'),
+        document.getElementById('stepper-indicator-2'),
+        document.getElementById('stepper-indicator-3')
+    ];
+
+    let currentStep = 1;
+
+    // Set minimum date on date picker to today
+    const bookingDateInput = document.getElementById('booking-date-input');
+    if (bookingDateInput) {
+        const todayStr = new Date().toISOString().split('T')[0];
+        bookingDateInput.min = todayStr;
+        bookingDateInput.value = todayStr;
+    }
+
+    function openGeneralBookingModal() {
+        if (!generalBookingModal) return;
+        // If login modal was open, close it
+        if (isLoginModalOpen) closeLoginModal();
+
+        resetBookingModal();
+        generalBookingModal.style.display = 'flex';
+        requestAnimationFrame(() => {
+            generalBookingModal.classList.add('active');
+        });
+    }
+
+    function closeGeneralBookingModal() {
+        if (!generalBookingModal) return;
+        generalBookingModal.classList.remove('active');
+        setTimeout(() => {
+            generalBookingModal.style.display = 'none';
+        }, 300);
+    }
+
+    function goToStep(stepNumber) {
+        currentStep = stepNumber;
+        if (step1Content) step1Content.style.display = stepNumber === 1 ? 'block' : 'none';
+        if (step2Content) step2Content.style.display = stepNumber === 2 ? 'block' : 'none';
+        if (step3Content) step3Content.style.display = stepNumber === 3 ? 'block' : 'none';
+
+        stepIndicators.forEach((indicator, idx) => {
+            if (!indicator) return;
+            const stepVal = idx + 1;
+            if (stepVal === stepNumber) {
+                indicator.className = 'step-indicator active';
+            } else if (stepVal < stepNumber) {
+                indicator.className = 'step-indicator completed';
+            } else {
+                indicator.className = 'step-indicator';
+            }
+        });
+
+        if (stepNumber === 3) {
+            updateBookingSummary();
+        }
+    }
+
+    function resetBookingModal() {
+        goToStep(1);
+        if (comprehensiveBookingForm) {
+            comprehensiveBookingForm.reset();
+            comprehensiveBookingForm.style.display = 'block';
+        }
+        if (bookingModalSuccess) {
+            bookingModalSuccess.style.display = 'none';
+        }
+        // Re-set today's date
+        if (bookingDateInput) {
+            const todayStr = new Date().toISOString().split('T')[0];
+            bookingDateInput.value = todayStr;
+        }
+        // Reset card active states
+        document.querySelectorAll('.consult-type-card').forEach((c, i) => {
+            if (i === 0) c.classList.add('active');
+            else c.classList.remove('active');
+        });
+        document.querySelectorAll('#reason-chips .chip-option').forEach((c, i) => {
+            if (i === 0) c.classList.add('active');
+            else c.classList.remove('active');
+        });
+        document.querySelectorAll('#patient-history-group .radio-pill').forEach((c, i) => {
+            if (i === 0) c.classList.add('active');
+            else c.classList.remove('active');
+        });
+    }
+
+    function updateBookingSummary() {
+        const consultType = document.querySelector('input[name="consultation_type"]:checked')?.value || 'In-Person Clinic Visit';
+        const deptSelect = document.getElementById('booking-department');
+        const dept = deptSelect && deptSelect.value ? deptSelect.value : 'General Physician & Family Medicine';
+        const doctorSelect = document.getElementById('booking-doctor');
+        const doctor = doctorSelect ? doctorSelect.value : 'First Available Specialist';
+        const dateVal = bookingDateInput ? bookingDateInput.value : '';
+        const timeVal = document.getElementById('booking-time-select')?.value || 'Selected Slot';
+
+        const sumType = document.getElementById('sum-type');
+        const sumDept = document.getElementById('sum-dept');
+        const sumDoc = document.getElementById('sum-doc');
+        const sumSchedule = document.getElementById('sum-schedule');
+
+        if (sumType) sumType.textContent = consultType;
+        if (sumDept) sumDept.textContent = dept;
+        if (sumDoc) sumDoc.textContent = doctor;
+        if (sumSchedule) {
+            if (dateVal && timeVal !== 'Selected Slot') {
+                const dateObj = new Date(dateVal + 'T00:00:00');
+                const formattedDate = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                sumSchedule.textContent = `${formattedDate} at ${timeVal}`;
+            } else if (dateVal) {
+                sumSchedule.textContent = `${dateVal} (Select a time slot)`;
+            } else {
+                sumSchedule.textContent = 'Please choose date and time';
+            }
+        }
+    }
+
+    // Attach open buttons
+    openBookingBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            openGeneralBookingModal();
+        });
+    });
+
+    if (closeGeneralBookingBtn) {
+        closeGeneralBookingBtn.addEventListener('click', closeGeneralBookingModal);
+    }
+
+    if (generalBookingModal) {
+        generalBookingModal.addEventListener('click', (e) => {
+            if (e.target === generalBookingModal) {
+                closeGeneralBookingModal();
+            }
+        });
+    }
+
+    // Consultation Type Card Selection
+    document.querySelectorAll('.consult-type-card').forEach(card => {
+        card.addEventListener('click', () => {
+            document.querySelectorAll('.consult-type-card').forEach(c => c.classList.remove('active'));
+            card.classList.add('active');
+            const radio = card.querySelector('input[type="radio"]');
+            if (radio) radio.checked = true;
+        });
+    });
+
+    // Reason Chips Selection
+    document.querySelectorAll('#reason-chips .chip-option').forEach(chip => {
+        chip.addEventListener('click', () => {
+            document.querySelectorAll('#reason-chips .chip-option').forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+            const radio = chip.querySelector('input[type="radio"]');
+            if (radio) radio.checked = true;
+        });
+    });
+
+    // Patient History Pills Selection
+    document.querySelectorAll('#patient-history-group .radio-pill').forEach(pill => {
+        pill.addEventListener('click', () => {
+            document.querySelectorAll('#patient-history-group .radio-pill').forEach(p => p.classList.remove('active'));
+            pill.classList.add('active');
+            const radio = pill.querySelector('input[type="radio"]');
+            if (radio) radio.checked = true;
+        });
+    });
+
+    // Next / Prev Step Navigation Buttons
+    document.querySelectorAll('.next-step-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const nextStep = parseInt(btn.getAttribute('data-next'));
+            if (nextStep === 2) {
+                const deptSelect = document.getElementById('booking-department');
+                if (deptSelect && !deptSelect.value) {
+                    deptSelect.focus();
+                    deptSelect.style.borderColor = '#ef4444';
+                    setTimeout(() => { deptSelect.style.borderColor = '#e2e8f0'; }, 2000);
+                    return;
+                }
+            } else if (nextStep === 3) {
+                const symptomsText = document.getElementById('symptoms-desc');
+                if (symptomsText && !symptomsText.value.trim()) {
+                    symptomsText.focus();
+                    symptomsText.style.borderColor = '#ef4444';
+                    setTimeout(() => { symptomsText.style.borderColor = '#e2e8f0'; }, 2000);
+                    return;
+                }
+            }
+            goToStep(nextStep);
+        });
+    });
+
+    document.querySelectorAll('.prev-step-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const prevStep = parseInt(btn.getAttribute('data-prev'));
+            goToStep(prevStep);
+        });
+    });
+
+    // Handle Time & Date changes to update summary live
+    const bookingTimeSelect = document.getElementById('booking-time-select');
+    if (bookingTimeSelect) bookingTimeSelect.addEventListener('change', updateBookingSummary);
+    if (bookingDateInput) bookingDateInput.addEventListener('change', updateBookingSummary);
+
+    // Form Submission & Success View
+    if (comprehensiveBookingForm) {
+        comprehensiveBookingForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const consultType = document.querySelector('input[name="consultation_type"]:checked')?.value || 'In-Person Clinic Visit';
+            const dept = document.getElementById('booking-department')?.value || 'General Physician';
+            const doctor = document.getElementById('booking-doctor')?.value || 'First Available Specialist';
+            const reason = document.querySelector('input[name="visit_reason"]:checked')?.value || 'General Health Consultation';
+            const patientType = document.querySelector('input[name="patient_history"]:checked')?.value || 'New Patient';
+            const dateVal = bookingDateInput ? bookingDateInput.value : '';
+            const timeVal = document.getElementById('booking-time-select')?.value || '09:00 AM';
+            const patientName = document.getElementById('patient-fullname')?.value || 'Valued Patient';
+            const patientPhone = document.getElementById('patient-phone')?.value || '';
+            const patientEmail = document.getElementById('patient-email')?.value || '';
+
+            const dateObj = new Date(dateVal + 'T00:00:00');
+            const formattedDate = isNaN(dateObj) ? dateVal : dateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+
+            const refNumber = 'AC-' + Math.floor(100000 + Math.random() * 900000);
+
+            const isOnline = consultType.includes('Online');
+
+            const ticketContainer = document.getElementById('success-ticket-details');
+            if (ticketContainer) {
+                ticketContainer.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 12px;">
+                        <span style="color: var(--text-muted);">Booking Reference:</span>
+                        <strong style="color: var(--clr-blue); font-family: monospace; font-size: 15px;">#${refNumber}</strong>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px;">
+                        <p><strong>Patient:</strong> ${patientName} (${patientType})</p>
+                        <p><strong>Mode:</strong> <span style="color: ${isOnline ? 'var(--clr-teal)' : 'var(--clr-blue)'}; font-weight: 600;">${consultType}</span></p>
+                        <p><strong>Specialty:</strong> ${dept}</p>
+                        <p><strong>Doctor:</strong> ${doctor}</p>
+                        <p><strong>Scheduled:</strong> ${formattedDate}</p>
+                        <p><strong>Time Slot:</strong> ${timeVal}</p>
+                        <p><strong>Reason:</strong> ${reason}</p>
+                        <p><strong>Contact:</strong> ${patientPhone}</p>
+                    </div>
+                `;
+            }
+
+            const noticeText = document.getElementById('channel-notice-text');
+            if (noticeText) {
+                if (isOnline) {
+                    noticeText.textContent = `A secure encrypted HD video consultation link and digital pass have been sent to ${patientEmail} and ${patientPhone}.`;
+                } else {
+                    noticeText.textContent = `Appointment confirmation and clinic entrance pass have been sent to ${patientPhone} and ${patientEmail}.`;
+                }
+            }
+
+            comprehensiveBookingForm.style.display = 'none';
+            if (bookingModalSuccess) {
+                bookingModalSuccess.style.display = 'block';
+            }
+        });
+    }
+
+    if (finishBookingBtn) {
+        finishBookingBtn.addEventListener('click', closeGeneralBookingModal);
+    }
+
+    // Global ESC key listener to close modals
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            if (isLoginModalOpen) closeLoginModal();
+            if (generalBookingModal && generalBookingModal.classList.contains('active')) closeGeneralBookingModal();
+        }
+    });
 });
+

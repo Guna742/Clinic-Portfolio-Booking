@@ -27,22 +27,22 @@
     <!-- SECTION 1: NAVBAR -->
     <nav class="navbar" id="navbar">
         <div class="container nav-container">
-            <div class="logo">
+            <a href="#home" class="logo">
                 <i class="ph-fill ph-heartbeat"></i>
                 <span>AuraClinic</span>
-            </div>
+            </a>
 
             <div class="nav-links">
                 <a href="#home">Home</a>
                 <a href="#why-us">Why Us</a>
-                <a href="#booking">Book Appointment</a>
                 <a href="#services">Services</a>
                 <a href="#reviews">Reviews</a>
                 <a href="#faq">FAQ</a>
             </div>
 
             <div class="nav-actions">
-                <button class="btn btn-primary-gradient nav-btn">Book Appointment</button>
+                <button class="nav-login-btn" id="nav-login-btn"><i class="ph ph-user"></i> Login</button>
+                <button class="nav-btn open-booking-btn">Book Appointment</button>
                 <button class="mobile-menu-btn" aria-label="Toggle Menu">
                     <i class="ph ph-list"></i>
                 </button>
@@ -65,7 +65,7 @@
                     experienced team is dedicated to providing personalized healthcare tailored to your unique needs.
                 </p>
                 <div class="hero-buttons">
-                    <button class="btn btn-primary-gradient btn-lg">Book an Appointment</button>
+                    <button class="btn btn-primary-gradient btn-lg open-booking-btn">Book an Appointment</button>
                     <button class="btn btn-outline btn-lg">Explore Services</button>
                 </div>
                 <div class="trust-indicators">
@@ -834,7 +834,7 @@
                 <p class="cta-description">Take the first step toward better health. Schedule your appointment with our
                     experienced medical team today.</p>
                 <div class="cta-buttons">
-                    <button class="btn btn-white btn-lg text-blue">Book an Appointment</button>
+                    <button class="btn btn-white btn-lg text-blue open-booking-btn">Book an Appointment</button>
                     <button class="btn btn-outline-white btn-lg">Call the Clinic</button>
                 </div>
             </div>
@@ -900,7 +900,379 @@
         </div>
     </footer>
 
-    <!-- BOOKING MODAL -->
+    <!-- LOGIN POPUP MODAL (Pops up automatically in 30s or on-demand) -->
+    <div id="login-modal" class="modal-backdrop-custom" style="display: none;">
+        <div class="login-modal-dialog">
+            <button class="modal-close-btn" id="close-login-modal" aria-label="Close modal">
+                <i class="ph ph-x"></i>
+            </button>
+            
+            <div class="login-header">
+                <div class="login-badge-icon">
+                    <i class="ph-fill ph-heartbeat"></i>
+                </div>
+                <h3 class="login-title">AuraClinic Patient Portal</h3>
+                <p class="login-subtitle">Access your medical history, doctor consultations, and appointment passes.</p>
+            </div>
+
+            <!-- Tab Switcher -->
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="tab-login" type="button">Sign In</button>
+                <button class="auth-tab" id="tab-register" type="button">Create Account</button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="login-form" class="auth-form">
+                <div class="form-group-custom">
+                    <label for="login-email">Email or Patient ID</label>
+                    <div class="input-with-icon">
+                        <i class="ph ph-envelope-simple"></i>
+                        <input type="email" id="login-email" placeholder="patient@example.com" required>
+                    </div>
+                </div>
+
+                <div class="form-group-custom">
+                    <div class="form-label-row">
+                        <label for="login-password">Password</label>
+                        <a href="javascript:void(0)" class="forgot-pwd-link" id="forgot-password-link">Forgot password?</a>
+                    </div>
+                    <div class="input-with-icon">
+                        <i class="ph ph-lock-key"></i>
+                        <input type="password" id="login-password" placeholder="••••••••" required>
+                        <button type="button" class="pwd-toggle-btn" id="toggle-login-pwd" aria-label="Toggle password visibility">
+                            <i class="ph ph-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-check-custom">
+                    <input type="checkbox" id="remember-me" checked>
+                    <label for="remember-me">Remember me on this device</label>
+                </div>
+
+                <button type="submit" class="btn btn-primary-gradient auth-submit-btn">
+                    <span>Sign In to Portal</span>
+                    <i class="ph ph-arrow-right"></i>
+                </button>
+
+                <div class="auth-divider">
+                    <span>or continue with</span>
+                </div>
+
+                <div class="social-auth-buttons">
+                    <button type="button" class="social-btn">
+                        <i class="ph ph-google-logo"></i> Google
+                    </button>
+                    <button type="button" class="social-btn">
+                        <i class="ph ph-apple-logo"></i> Apple
+                    </button>
+                </div>
+            </form>
+
+            <!-- Register Form -->
+            <form id="register-form" class="auth-form" style="display: none;">
+                <div class="form-group-custom">
+                    <label for="reg-name">Full Name</label>
+                    <div class="input-with-icon">
+                        <i class="ph ph-user"></i>
+                        <input type="text" id="reg-name" placeholder="e.g. John Doe">
+                    </div>
+                </div>
+
+                <div class="form-group-custom">
+                    <label for="reg-email">Email Address</label>
+                    <div class="input-with-icon">
+                        <i class="ph ph-envelope-simple"></i>
+                        <input type="email" id="reg-email" placeholder="patient@example.com">
+                    </div>
+                </div>
+
+                <div class="form-group-custom">
+                    <label for="reg-phone">Phone Number</label>
+                    <div class="input-with-icon">
+                        <i class="ph ph-phone"></i>
+                        <input type="tel" id="reg-phone" placeholder="(555) 000-0000">
+                    </div>
+                </div>
+
+                <div class="form-group-custom">
+                    <label for="reg-password">Create Password</label>
+                    <div class="input-with-icon">
+                        <i class="ph ph-lock-key"></i>
+                        <input type="password" id="reg-password" placeholder="At least 8 characters">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary-gradient auth-submit-btn">
+                    <span>Create Patient Account</span>
+                    <i class="ph ph-check-circle"></i>
+                </button>
+            </form>
+
+            <!-- Notification / Status Banner -->
+            <div id="auth-status-msg" class="auth-status-msg" style="display: none;"></div>
+        </div>
+    </div>
+
+    <!-- GENERAL QUESTIONS CONSULTATION & APPOINTMENT BOOKING MODAL -->
+    <div id="general-booking-modal" class="modal-backdrop-custom" style="display: none;">
+        <div class="booking-modal-dialog">
+            <button class="modal-close-btn" id="close-general-booking-modal" aria-label="Close modal">
+                <i class="ph ph-x"></i>
+            </button>
+
+            <!-- Stepper Indicator -->
+            <div class="booking-stepper">
+                <div class="step-indicator active" id="stepper-indicator-1">
+                    <span class="step-num">1</span>
+                    <span class="step-text">Type & Specialty</span>
+                </div>
+                <div class="step-line"></div>
+                <div class="step-indicator" id="stepper-indicator-2">
+                    <span class="step-num">2</span>
+                    <span class="step-text">General Questions</span>
+                </div>
+                <div class="step-line"></div>
+                <div class="step-indicator" id="stepper-indicator-3">
+                    <span class="step-num">3</span>
+                    <span class="step-text">Schedule & Details</span>
+                </div>
+            </div>
+
+            <form id="comprehensive-booking-form">
+                <!-- STEP 1: Care Type & Specialty -->
+                <div class="booking-step-content" id="step-1-content">
+                    <div class="step-header">
+                        <h3 class="step-title">Select Consultation Type</h3>
+                        <p class="step-desc">Choose between visiting our clinic or consulting online via secure video.</p>
+                    </div>
+
+                    <!-- Consultation Type Cards -->
+                    <div class="consultation-types-grid">
+                        <label class="consult-type-card active">
+                            <input type="radio" name="consultation_type" value="In-Person Clinic Visit" checked>
+                            <div class="card-icon"><i class="ph-duotone ph-hospital"></i></div>
+                            <div class="card-info">
+                                <h4>In-Person Clinic Visit</h4>
+                                <p>Face-to-face examination at AuraClinic central medical facility</p>
+                            </div>
+                            <div class="radio-check"><i class="ph ph-check"></i></div>
+                        </label>
+
+                        <label class="consult-type-card">
+                            <input type="radio" name="consultation_type" value="Online Video Consulting">
+                            <div class="card-icon"><i class="ph-duotone ph-video-camera"></i></div>
+                            <div class="card-info">
+                                <h4>Online Video Consulting</h4>
+                                <p>Consult verified specialist from home with digital prescription</p>
+                            </div>
+                            <div class="radio-check"><i class="ph ph-check"></i></div>
+                        </label>
+                    </div>
+
+                    <div class="form-group-custom" style="margin-top: 20px;">
+                        <label for="booking-department">Medical Department / Specialty *</label>
+                        <select id="booking-department" class="custom-select" required>
+                            <option value="" disabled selected>Select Medical Department</option>
+                            <option value="General Physician & Family Medicine">🩺 General Physician & Family Medicine</option>
+                            <option value="Cardiology & Heart Care">❤️ Cardiology & Heart Care</option>
+                            <option value="Dermatology & Skin Care">✨ Dermatology & Skin Care</option>
+                            <option value="Pediatrics & Child Health">👶 Pediatrics & Child Health</option>
+                            <option value="Orthopedics & Joint Care">🦴 Orthopedics & Joint Care</option>
+                            <option value="Dental & Oral Health">🦷 Dental & Oral Health</option>
+                            <option value="Neurology & Brain Care">🧠 Neurology & Brain Care</option>
+                            <option value="Psychiatry & Mental Wellness">🌿 Psychiatry & Mental Wellness</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label for="booking-doctor">Preferred Doctor (Optional)</label>
+                        <select id="booking-doctor" class="custom-select">
+                            <option value="First Available Specialist" selected>First Available Specialist (Fastest)</option>
+                            <option value="Dr. Sarah Jenkins (Cardiology)">Dr. Sarah Jenkins (Chief Cardiologist - 15+ yrs)</option>
+                            <option value="Dr. Marcus Vance (General Medicine)">Dr. Marcus Vance (Senior Physician - 12+ yrs)</option>
+                            <option value="Dr. Emily Chen (Dermatology)">Dr. Emily Chen (Dermatology Specialist - 10+ yrs)</option>
+                            <option value="Dr. David Ross (Pediatrics)">Dr. David Ross (Pediatrics Specialist - 14+ yrs)</option>
+                        </select>
+                    </div>
+
+                    <div class="step-actions">
+                        <div></div>
+                        <button type="button" class="btn btn-primary-gradient next-step-btn" data-next="2">
+                            <span>Next: General Questions</span> <i class="ph ph-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- STEP 2: General Questions & Symptoms -->
+                <div class="booking-step-content" id="step-2-content" style="display: none;">
+                    <div class="step-header">
+                        <h3 class="step-title">General Medical Questions</h3>
+                        <p class="step-desc">Help your doctor prepare better by answering a few quick questions.</p>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label>Primary Reason for Visit / Consultation *</label>
+                        <div class="chips-options-grid" id="reason-chips">
+                            <label class="chip-option active">
+                                <input type="radio" name="visit_reason" value="Routine Health Checkup" checked>
+                                <span>Routine Checkup</span>
+                            </label>
+                            <label class="chip-option">
+                                <input type="radio" name="visit_reason" value="Acute Symptoms / Illness">
+                                <span>Acute Symptoms</span>
+                            </label>
+                            <label class="chip-option">
+                                <input type="radio" name="visit_reason" value="Follow-up Consultation">
+                                <span>Follow-up</span>
+                            </label>
+                            <label class="chip-option">
+                                <input type="radio" name="visit_reason" value="Prescription Renewal">
+                                <span>Prescription Renewal</span>
+                            </label>
+                            <label class="chip-option">
+                                <input type="radio" name="visit_reason" value="Specialist Second Opinion">
+                                <span>Second Opinion</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label>Are you a new patient or returning patient? *</label>
+                        <div class="radio-inline-group" id="patient-history-group">
+                            <label class="radio-pill active">
+                                <input type="radio" name="patient_history" value="New Patient" checked>
+                                <span>Yes, I am a New Patient</span>
+                            </label>
+                            <label class="radio-pill">
+                                <input type="radio" name="patient_history" value="Returning Patient">
+                                <span>No, Returning Patient</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label for="symptoms-desc">Describe your symptoms or health concerns *</label>
+                        <textarea id="symptoms-desc" rows="3" class="custom-textarea" placeholder="e.g. Mild fever, persistent cough, or general wellness advice..." required></textarea>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label for="allergies-meds">Any ongoing medications or known allergies? (Optional)</label>
+                        <input type="text" id="allergies-meds" class="custom-input" placeholder="e.g. Penicillin allergy, taking vitamins">
+                    </div>
+
+                    <div class="step-actions">
+                        <button type="button" class="btn btn-outline prev-step-btn" data-prev="1">
+                            <i class="ph ph-arrow-left"></i> <span>Back</span>
+                        </button>
+                        <button type="button" class="btn btn-primary-gradient next-step-btn" data-next="3">
+                            <span>Next: Select Schedule</span> <i class="ph ph-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- STEP 3: Schedule & Patient Details -->
+                <div class="booking-step-content" id="step-3-content" style="display: none;">
+                    <div class="step-header">
+                        <h3 class="step-title">Preferred Schedule & Patient Details</h3>
+                        <p class="step-desc">Pick your convenient date & time and provide contact information.</p>
+                    </div>
+
+                    <div class="form-row-2col">
+                        <div class="form-group-custom">
+                            <label for="booking-date-input">Select Date *</label>
+                            <input type="date" id="booking-date-input" class="custom-input" required>
+                        </div>
+
+                        <div class="form-group-custom">
+                            <label for="booking-time-select">Preferred Time Slot *</label>
+                            <select id="booking-time-select" class="custom-select" required>
+                                <option value="" disabled selected>Choose Time Slot</option>
+                                <option value="09:00 AM">09:00 AM (Morning)</option>
+                                <option value="10:00 AM">10:00 AM (Morning)</option>
+                                <option value="11:30 AM">11:30 AM (Morning)</option>
+                                <option value="02:00 PM">02:00 PM (Afternoon)</option>
+                                <option value="03:30 PM">03:30 PM (Afternoon)</option>
+                                <option value="05:00 PM">05:00 PM (Evening)</option>
+                                <option value="06:30 PM">06:30 PM (Evening)</option>
+                                <option value="07:30 PM">07:30 PM (Evening)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row-2col">
+                        <div class="form-group-custom">
+                            <label for="patient-fullname">Full Name *</label>
+                            <input type="text" id="patient-fullname" class="custom-input" placeholder="e.g. John Doe" required>
+                        </div>
+                        <div class="form-group-custom">
+                            <label for="patient-phone">Mobile Number *</label>
+                            <input type="tel" id="patient-phone" class="custom-input" placeholder="(555) 000-0000" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row-2col">
+                        <div class="form-group-custom">
+                            <label for="patient-email">Email Address *</label>
+                            <input type="email" id="patient-email" class="custom-input" placeholder="john@example.com" required>
+                        </div>
+                        <div class="form-group-custom">
+                            <label for="patient-age">Age / Gender</label>
+                            <input type="text" id="patient-age" class="custom-input" placeholder="e.g. 32 / Male">
+                        </div>
+                    </div>
+
+                    <!-- Booking Summary Box -->
+                    <div class="booking-summary-card">
+                        <div class="summary-header">
+                            <i class="ph-fill ph-check-circle"></i>
+                            <span>Consultation Summary</span>
+                        </div>
+                        <div class="summary-details">
+                            <p><strong>Type:</strong> <span id="sum-type">In-Person Clinic Visit</span></p>
+                            <p><strong>Specialty:</strong> <span id="sum-dept">General Physician & Family Medicine</span></p>
+                            <p><strong>Doctor:</strong> <span id="sum-doc">First Available Specialist</span></p>
+                            <p><strong>Schedule:</strong> <span id="sum-schedule">Please select date and time</span></p>
+                        </div>
+                    </div>
+
+                    <div class="step-actions">
+                        <button type="button" class="btn btn-outline prev-step-btn" data-prev="2">
+                            <i class="ph ph-arrow-left"></i> <span>Back</span>
+                        </button>
+                        <button type="submit" class="btn btn-primary-gradient" id="submit-booking-btn">
+                            <span>Confirm & Book Appointment</span>
+                            <i class="ph ph-check"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- SUCCESS VIEW -->
+            <div id="booking-modal-success" class="booking-modal-success" style="display: none;">
+                <div class="success-icon-badge">
+                    <i class="ph ph-check"></i>
+                </div>
+                <h3 class="success-title">Consultation Confirmed!</h3>
+                <p class="success-sub">Your appointment has been successfully booked with AuraClinic.</p>
+                
+                <div class="success-ticket" id="success-ticket-details">
+                    <!-- Injected via JS -->
+                </div>
+
+                <div class="success-notice" id="success-channel-notice">
+                    <i class="ph ph-info"></i>
+                    <span id="channel-notice-text">A confirmation SMS & email have been sent to your registered contact.</span>
+                </div>
+
+                <button type="button" class="btn btn-primary-gradient" id="finish-booking-modal-btn" style="width: 100%; justify-content: center;">
+                    Done & Return to Website
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOOKING MODAL (Inline quick selector) -->
     <div id="booking-modal" class="modal-overlay"
         style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
         <div class="modal-content"
