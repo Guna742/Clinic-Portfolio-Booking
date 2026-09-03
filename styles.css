@@ -2054,6 +2054,7 @@ html, body { overflow-x: clip; max-width: 100%; }
 /* Modal Dialog Cards */
 .login-modal-dialog,
 .booking-modal-dialog,
+.patient-profile-dialog,
 .service-details-dialog {
     background: #ffffff;
     border-radius: 24px;
@@ -2067,7 +2068,9 @@ html, body { overflow-x: clip; max-width: 100%; }
 }
 
 .modal-backdrop-custom.active .login-modal-dialog,
-.modal-backdrop-custom.active .booking-modal-dialog {
+.modal-backdrop-custom.active .booking-modal-dialog,
+.modal-backdrop-custom.active .patient-profile-dialog,
+.modal-backdrop-custom.active .service-details-dialog {
     transform: scale(1) translateY(0);
     opacity: 1;
 }
