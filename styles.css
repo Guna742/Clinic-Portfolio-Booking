@@ -441,15 +441,15 @@ img {
     position: relative;
     padding-top: 140px;
     padding-bottom: 80px;
-    min-height: calc(100vh - 40px);
+    min-height: 100vh;
     display: flex;
     align-items: center;
     overflow: hidden;
     background-color: var(--bg-light-blue);
     background-image: url('Hero-Image.png');
     background-repeat: no-repeat;
-    background-position: right 4% center;
-    background-size: min(46vw, 560px) auto;
+    background-position: right center;
+    background-size: cover;
 }
 
 .hero-container {
@@ -1499,12 +1499,13 @@ html, body {
 
     .hero { 
         padding-top: 40px !important; 
-        padding-bottom: 230px !important;
+        padding-bottom: 40px !important;
+        min-height: 100vh !important;
         background-color: var(--bg-light-blue) !important;
         background-image: url('Hero-Image.png') !important;
         background-repeat: no-repeat !important;
-        background-position: center bottom 16px !important;
-        background-size: min(85vw, 290px) auto !important;
+        background-position: center center !important;
+        background-size: cover !important;
     }
     .hero-container { display: flex !important; flex-direction: column !important; gap: 0 !important; }
     .hero-content { max-width: 100% !important; }
