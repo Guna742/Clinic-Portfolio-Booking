@@ -353,8 +353,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const maxTranslate = Math.max(0, lastCardRight - targetRightEdge);
             
             // Lead-in and lead-out buffers prevent premature sliding and ensure first & last cards are fully seen
-            const leadIn = isMobile ? 80 : 160;
-            const leadOut = isMobile ? 80 : 160;
+            const leadIn = isMobile ? 30 : 60;
+            const leadOut = isMobile ? 30 : 60;
             
             whyUsTrack.style.transform = savedTransform;
             return { maxTranslate, leadIn, leadOut };
