@@ -2539,6 +2539,7 @@ html, body { overflow-x: clip; max-width: 100%; }
 .bg-cyan-light { background: #cffafe; color: #0891b2; }
 .bg-pink-light { background: #fce7f3; color: #db2777; }
 .bg-teal-light { background: #ccfbf1; color: #0d9488; }
+.bg-slate-light { background: #f1f5f9; color: #94a3b8; }
 
 /* Consultation Types Grid */
 .consultation-types-grid {

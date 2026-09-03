@@ -1046,10 +1046,10 @@
                         <p class="step-desc">Choose between visiting our clinic or consulting online via secure video.</p>
                     </div>
 
-                    <!-- Consultation Type Cards -->
+                    <!-- Consultation Type Cards (Unselected by default) -->
                     <div class="consultation-types-grid">
-                        <label class="consult-type-card active">
-                            <input type="radio" name="consultation_type" value="In-Person Clinic Visit" checked>
+                        <label class="consult-type-card" id="consult-type-inperson">
+                            <input type="radio" name="consultation_type" value="In-Person Clinic Visit">
                             <div class="card-icon"><i class="ph-duotone ph-hospital"></i></div>
                             <div class="card-info">
                                 <h4>In-Person Clinic Visit</h4>
@@ -1058,7 +1058,7 @@
                             <div class="radio-check"><i class="ph ph-check"></i></div>
                         </label>
 
-                        <label class="consult-type-card">
+                        <label class="consult-type-card" id="consult-type-online">
                             <input type="radio" name="consultation_type" value="Online Video Consulting">
                             <div class="card-icon"><i class="ph-duotone ph-video-camera"></i></div>
                             <div class="card-info">
@@ -1072,19 +1072,19 @@
                     <!-- Custom Dropdown: Department / Specialty -->
                     <div class="form-group-custom" style="margin-top: 20px;">
                         <label>Medical Department / Specialty <span style="color: #ef4444;">*</span></label>
-                        <input type="hidden" id="booking-department" name="department" value="General Physician & Family Medicine" required>
+                        <input type="hidden" id="booking-department" name="department" value="" required>
                         
                         <div class="custom-dropdown-select" id="department-dropdown">
                             <div class="dropdown-trigger">
                                 <div class="selected-value">
-                                    <div class="opt-icon bg-blue-light"><i class="ph-duotone ph-stethoscope"></i></div>
-                                    <span class="opt-text">General Physician & Family Medicine</span>
+                                    <div class="opt-icon bg-slate-light"><i class="ph-duotone ph-stethoscope"></i></div>
+                                    <span class="opt-text text-placeholder" style="color: #94a3b8;">Choose Medical Specialty...</span>
                                 </div>
                                 <i class="ph ph-caret-down caret-icon"></i>
                             </div>
                             
                             <div class="dropdown-menu-custom">
-                                <div class="dropdown-option active" data-value="General Physician & Family Medicine">
+                                <div class="dropdown-option" data-value="General Physician & Family Medicine">
                                     <div class="opt-icon bg-blue-light"><i class="ph-duotone ph-stethoscope"></i></div>
                                     <div class="opt-details">
                                         <span class="opt-title">General Physician & Family Medicine</span>
@@ -1154,20 +1154,20 @@
 
                     <!-- Custom Dropdown: Preferred Doctor -->
                     <div class="form-group-custom">
-                        <label>Preferred Doctor (Optional)</label>
-                        <input type="hidden" id="booking-doctor" name="doctor" value="First Available Specialist">
+                        <label>Preferred Doctor <span style="color: #ef4444;">*</span></label>
+                        <input type="hidden" id="booking-doctor" name="doctor" value="" required>
                         
                         <div class="custom-dropdown-select" id="doctor-dropdown">
                             <div class="dropdown-trigger">
                                 <div class="selected-value">
-                                    <div class="opt-icon bg-amber-light"><i class="ph-duotone ph-lightning"></i></div>
-                                    <span class="opt-text">First Available Specialist (Fastest)</span>
+                                    <div class="opt-icon bg-slate-light"><i class="ph-duotone ph-user-circle"></i></div>
+                                    <span class="opt-text text-placeholder" style="color: #94a3b8;">Select Doctor / Specialist...</span>
                                 </div>
                                 <i class="ph ph-caret-down caret-icon"></i>
                             </div>
                             
                             <div class="dropdown-menu-custom">
-                                <div class="dropdown-option active" data-value="First Available Specialist">
+                                <div class="dropdown-option" data-value="First Available Specialist">
                                     <div class="opt-icon bg-amber-light"><i class="ph-duotone ph-lightning"></i></div>
                                     <div class="opt-details">
                                         <span class="opt-title">First Available Specialist</span>
@@ -1228,26 +1228,26 @@
 
                     <div class="form-row-2col">
                         <div class="form-group-custom">
-                            <label for="booking-date-input">Select Date *</label>
+                            <label for="booking-date-input">Select Date <span style="color: #ef4444;">*</span></label>
                             <input type="date" id="booking-date-input" class="custom-input" required>
                         </div>
 
                         <!-- Custom Dropdown: Preferred Time Slot -->
                         <div class="form-group-custom">
                             <label>Preferred Time Slot <span style="color: #ef4444;">*</span></label>
-                            <input type="hidden" id="booking-time-select" name="time_slot" value="09:00 AM" required>
+                            <input type="hidden" id="booking-time-select" name="time_slot" value="" required>
                             
                             <div class="custom-dropdown-select" id="time-dropdown">
                                 <div class="dropdown-trigger">
                                     <div class="selected-value">
-                                        <div class="opt-icon bg-blue-light"><i class="ph-duotone ph-clock"></i></div>
-                                        <span class="opt-text">09:00 AM (Morning)</span>
+                                        <div class="opt-icon bg-slate-light"><i class="ph-duotone ph-clock"></i></div>
+                                        <span class="opt-text text-placeholder" style="color: #94a3b8;">Choose Time Slot...</span>
                                     </div>
                                     <i class="ph ph-caret-down caret-icon"></i>
                                 </div>
                                 
                                 <div class="dropdown-menu-custom">
-                                    <div class="dropdown-option active" data-value="09:00 AM">
+                                    <div class="dropdown-option" data-value="09:00 AM">
                                         <div class="opt-icon bg-blue-light"><i class="ph-duotone ph-clock"></i></div>
                                         <div class="opt-details"><span class="opt-title">09:00 AM</span><span class="opt-sub">Morning slot</span></div>
                                         <i class="ph ph-check check-icon"></i>
@@ -1294,23 +1294,23 @@
 
                     <div class="form-row-2col">
                         <div class="form-group-custom">
-                            <label for="patient-fullname">Full Name *</label>
+                            <label for="patient-fullname">Full Name <span style="color: #ef4444;">*</span></label>
                             <input type="text" id="patient-fullname" class="custom-input" placeholder="e.g. John Doe" required>
                         </div>
                         <div class="form-group-custom">
-                            <label for="patient-phone">Mobile Number *</label>
+                            <label for="patient-phone">Mobile Number <span style="color: #ef4444;">*</span></label>
                             <input type="tel" id="patient-phone" class="custom-input" placeholder="(555) 000-0000" required>
                         </div>
                     </div>
 
                     <div class="form-row-2col">
                         <div class="form-group-custom">
-                            <label for="patient-email">Email Address *</label>
+                            <label for="patient-email">Email Address <span style="color: #ef4444;">*</span></label>
                             <input type="email" id="patient-email" class="custom-input" placeholder="john@example.com" required>
                         </div>
                         <div class="form-group-custom">
-                            <label for="patient-age">Age / Gender</label>
-                            <input type="text" id="patient-age" class="custom-input" placeholder="e.g. 32 / Male">
+                            <label for="patient-age">Age / Gender <span style="color: #ef4444;">*</span></label>
+                            <input type="text" id="patient-age" class="custom-input" placeholder="e.g. 32 / Male" required>
                         </div>
                     </div>
 
@@ -1321,10 +1321,10 @@
                             <span>Consultation Summary</span>
                         </div>
                         <div class="summary-details">
-                            <p><strong>Type:</strong> <span id="sum-type">In-Person Clinic Visit</span></p>
-                            <p><strong>Specialty:</strong> <span id="sum-dept">General Physician & Family Medicine</span></p>
-                            <p><strong>Doctor:</strong> <span id="sum-doc">First Available Specialist</span></p>
-                            <p><strong>Schedule:</strong> <span id="sum-schedule">Please select date and time</span></p>
+                            <p><strong>Type:</strong> <span id="sum-type">Not selected</span></p>
+                            <p><strong>Specialty:</strong> <span id="sum-dept">Not selected</span></p>
+                            <p><strong>Doctor:</strong> <span id="sum-doc">Not selected</span></p>
+                            <p><strong>Schedule:</strong> <span id="sum-schedule">Please choose date and time</span></p>
                         </div>
                     </div>
 

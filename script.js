@@ -825,7 +825,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (bookingDateInput) {
         const todayStr = new Date().toISOString().split('T')[0];
         bookingDateInput.min = todayStr;
-        bookingDateInput.value = todayStr;
     }
 
     // Custom UI Select Dropdown Initialization
@@ -871,6 +870,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
 
                     dropdown.classList.remove('open');
+                    hideValidationWarning();
                     updateBookingSummary();
                 });
             });
@@ -890,7 +890,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         resetBookingModal();
 
-        // Auto pre-fill with authenticated user details
+        // Auto pre-fill with authenticated user contact details if available
         const signedUser = getSignedInUser();
         if (signedUser) {
             const nameInput = document.getElementById('patient-fullname');
@@ -950,6 +950,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function resetBookingModal() {
         goToStep(1);
+        hideValidationWarning();
+
         if (comprehensiveBookingForm) {
             comprehensiveBookingForm.reset();
             comprehensiveBookingForm.style.display = 'block';
@@ -957,26 +959,53 @@ document.addEventListener('DOMContentLoaded', () => {
         if (bookingModalSuccess) {
             bookingModalSuccess.style.display = 'none';
         }
-        // Re-set today's date
-        if (bookingDateInput) {
-            const todayStr = new Date().toISOString().split('T')[0];
-            bookingDateInput.value = todayStr;
-        }
-        // Reset card active states
-        document.querySelectorAll('.consult-type-card').forEach((c, i) => {
-            if (i === 0) c.classList.add('active');
-            else c.classList.remove('active');
+
+        // Reset consultation type cards
+        document.querySelectorAll('.consult-type-card').forEach(c => {
+            c.classList.remove('active');
+            const radio = c.querySelector('input[type="radio"]');
+            if (radio) radio.checked = false;
         });
+
+        // Reset Custom Dropdowns to empty placeholder states
+        const deptInput = document.getElementById('booking-department');
+        if (deptInput) deptInput.value = '';
+        const deptTriggerVal = document.getElementById('department-dropdown')?.querySelector('.selected-value');
+        if (deptTriggerVal) {
+            deptTriggerVal.innerHTML = '<div class="opt-icon bg-slate-light"><i class="ph-duotone ph-stethoscope"></i></div><span class="opt-text text-placeholder" style="color: #94a3b8;">Choose Medical Specialty...</span>';
+        }
+
+        const docInput = document.getElementById('booking-doctor');
+        if (docInput) docInput.value = '';
+        const docTriggerVal = document.getElementById('doctor-dropdown')?.querySelector('.selected-value');
+        if (docTriggerVal) {
+            docTriggerVal.innerHTML = '<div class="opt-icon bg-slate-light"><i class="ph-duotone ph-user-circle"></i></div><span class="opt-text text-placeholder" style="color: #94a3b8;">Select Doctor / Specialist...</span>';
+        }
+
+        const timeInput = document.getElementById('booking-time-select');
+        if (timeInput) timeInput.value = '';
+        const timeTriggerVal = document.getElementById('time-dropdown')?.querySelector('.selected-value');
+        if (timeTriggerVal) {
+            timeTriggerVal.innerHTML = '<div class="opt-icon bg-slate-light"><i class="ph-duotone ph-clock"></i></div><span class="opt-text text-placeholder" style="color: #94a3b8;">Choose Time Slot...</span>';
+        }
+
+        // Clear active classes in dropdown menus
+        document.querySelectorAll('.dropdown-option').forEach(opt => opt.classList.remove('active'));
+
+        // Reset date & inputs
+        if (bookingDateInput) bookingDateInput.value = '';
+        const ageInput = document.getElementById('patient-age');
+        if (ageInput) ageInput.value = '';
     }
 
     function updateBookingSummary() {
-        const consultType = document.querySelector('input[name="consultation_type"]:checked')?.value || 'In-Person Clinic Visit';
+        const consultType = document.querySelector('input[name="consultation_type"]:checked')?.value || 'Not selected';
         const deptInput = document.getElementById('booking-department');
-        const dept = deptInput && deptInput.value ? deptInput.value : 'General Physician & Family Medicine';
+        const dept = deptInput && deptInput.value ? deptInput.value : 'Not selected';
         const doctorInput = document.getElementById('booking-doctor');
-        const doctor = doctorInput && doctorInput.value ? doctorInput.value : 'First Available Specialist';
+        const doctor = doctorInput && doctorInput.value ? doctorInput.value : 'Not selected';
         const dateVal = bookingDateInput ? bookingDateInput.value : '';
-        const timeVal = document.getElementById('booking-time-select')?.value || '09:00 AM';
+        const timeVal = document.getElementById('booking-time-select')?.value || '';
 
         const sumType = document.getElementById('sum-type');
         const sumDept = document.getElementById('sum-dept');
@@ -992,7 +1021,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const formattedDate = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
                 sumSchedule.textContent = `${formattedDate} at ${timeVal}`;
             } else if (dateVal) {
-                sumSchedule.textContent = `${dateVal} (Select a time slot)`;
+                sumSchedule.textContent = `${dateVal} (Time slot not selected)`;
+            } else if (timeVal) {
+                sumSchedule.textContent = `Date not selected at ${timeVal}`;
             } else {
                 sumSchedule.textContent = 'Please choose date and time';
             }
@@ -1027,6 +1058,7 @@ document.addEventListener('DOMContentLoaded', () => {
             card.classList.add('active');
             const radio = card.querySelector('input[type="radio"]');
             if (radio) radio.checked = true;
+            hideValidationWarning();
             updateBookingSummary();
         });
     });
@@ -1065,10 +1097,26 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.addEventListener('click', () => {
             const nextStep = parseInt(btn.getAttribute('data-next'));
             if (nextStep === 2) {
+                // Validate Consultation Type selection
+                const consultTypeChecked = document.querySelector('input[name="consultation_type"]:checked');
+                if (!consultTypeChecked) {
+                    showValidationWarning('Please choose a Consultation Type (In-Person Visit or Online Video).', document.querySelector('.consultation-types-grid'));
+                    return;
+                }
+
+                // Validate Department selection
                 const deptInput = document.getElementById('booking-department');
                 if (!deptInput || !deptInput.value) {
                     const deptDropdown = document.getElementById('department-dropdown')?.querySelector('.dropdown-trigger');
-                    showValidationWarning('Please select a Medical Department before continuing.', deptDropdown);
+                    showValidationWarning('Please choose a Medical Department / Specialty.', deptDropdown);
+                    return;
+                }
+
+                // Validate Doctor selection
+                const docInput = document.getElementById('booking-doctor');
+                if (!docInput || !docInput.value) {
+                    const docDropdown = document.getElementById('doctor-dropdown')?.querySelector('.dropdown-trigger');
+                    showValidationWarning('Please choose a Preferred Doctor or First Available Specialist.', docDropdown);
                     return;
                 }
             }
@@ -1100,6 +1148,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const nameInput = document.getElementById('patient-fullname');
             const phoneInput = document.getElementById('patient-phone');
             const emailInput = document.getElementById('patient-email');
+            const ageInput = document.getElementById('patient-age');
 
             if (!dateInput || !dateInput.value) {
                 showValidationWarning('Please select your preferred appointment date.', dateInput);
@@ -1130,6 +1179,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+            const ageVal = ageInput ? ageInput.value.trim() : '';
+            if (!ageVal || ageVal.length < 2) {
+                showValidationWarning('Please enter your Age and Gender (e.g. 32 / Male).', ageInput);
+                return;
+            }
+
             hideValidationWarning();
 
             const consultType = document.querySelector('input[name="consultation_type"]:checked')?.value || 'In-Person Clinic Visit';
@@ -1140,6 +1195,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const patientName = nameInput.value.trim();
             const patientPhone = phoneVal;
             const patientEmail = emailVal;
+            const patientAge = ageVal;
 
             const dateObj = new Date(dateVal + 'T00:00:00');
             const formattedDate = isNaN(dateObj) ? dateVal : dateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
@@ -1156,7 +1212,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <strong style="color: var(--clr-blue); font-family: monospace; font-size: 15px;">#${refNumber}</strong>
                     </div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px;">
-                        <p><strong>Patient:</strong> ${patientName}</p>
+                        <p><strong>Patient:</strong> ${patientName} (${patientAge})</p>
                         <p><strong>Mode:</strong> <span style="color: ${isOnline ? 'var(--clr-teal)' : 'var(--clr-blue)'}; font-weight: 600;">${consultType}</span></p>
                         <p><strong>Specialty:</strong> ${dept}</p>
                         <p><strong>Doctor:</strong> ${doctor}</p>
