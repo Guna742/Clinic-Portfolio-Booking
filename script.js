@@ -625,18 +625,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 300);
     }
 
-    // Continue button inside Almost There view triggers transition to Login Form section
+    // Continue button inside Almost There view triggers transition to Appointment Booking process
     if (almostThereContinueBtn) {
         almostThereContinueBtn.addEventListener('click', () => {
-            if (almostThereView) almostThereView.style.display = 'none';
-            if (authFormsView) authFormsView.style.display = 'block';
-            if (bookingLoginAlert) bookingLoginAlert.style.display = 'flex';
-            if (loginForm && registerForm) {
-                loginForm.style.display = 'block';
-                registerForm.style.display = 'none';
-            }
-            const emailInput = document.getElementById('login-email');
-            if (emailInput) setTimeout(() => emailInput.focus(), 150);
+            const targetDate = pendingBooking ? pendingBooking.date : (selectedDate || new Date());
+            closeLoginModal();
+            setTimeout(() => {
+                openGeneralBookingModal(targetDate);
+            }, 320);
         });
     }
 
@@ -649,11 +645,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function handleBookingRequest(targetDate = null) {
         const dateToBook = targetDate || selectedDate || new Date();
-        if (!isUserSignedIn()) {
-            promptLoginForBooking(dateToBook);
-        } else {
-            openGeneralBookingModal(dateToBook);
-        }
+        pendingBooking = { date: dateToBook };
+        openLoginModal(true); // Always show "Almost There" view first
     }
 
     function handleSuccessfulAuth(userData, isNewAccount = false) {
