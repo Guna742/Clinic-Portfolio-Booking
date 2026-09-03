@@ -328,7 +328,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // ==========================================
-    // Horizontal Scroll for "Why Choose Us"
+    // Horizontal Scroll for "Why Choose Us" (Desktop Only)
     // ==========================================
     const whyUsSection = document.getElementById('why-us');
     const whyUsTrack = document.getElementById('why-choose-us-track');
@@ -337,20 +337,33 @@ document.addEventListener('DOMContentLoaded', () => {
         let ticking = false;
         
         const calculateMaxTranslate = () => {
+            if (window.innerWidth <= 768) return 0;
+            
             const firstCard = whyUsTrack.querySelector('.feature-card:first-child');
             const lastCard = whyUsTrack.querySelector('.feature-card:last-child');
             
             if (!firstCard || !lastCard) return 0;
+            
+            // Save and temporarily reset transform for accurate offset measurement
+            const savedTransform = whyUsTrack.style.transform;
+            whyUsTrack.style.transform = 'none';
             
             const firstCardLeft = firstCard.offsetLeft;
             const lastCardRight = lastCard.offsetLeft + lastCard.offsetWidth;
             const targetRightEdge = window.innerWidth - firstCardLeft;
             const maxTranslate = Math.max(0, lastCardRight - targetRightEdge);
             
+            whyUsTrack.style.transform = savedTransform;
             return maxTranslate;
         };
 
         const updateScroll = () => {
+            if (window.innerWidth <= 768) {
+                whyUsTrack.style.transform = 'none';
+                ticking = false;
+                return;
+            }
+            
             const maxTranslate = calculateMaxTranslate();
             if (maxTranslate <= 0) {
                 whyUsTrack.style.transform = 'translate3d(0px, 0, 0)';
@@ -367,19 +380,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             
-            if (rect.top <= 0 && rect.bottom >= window.innerHeight) {
+            if (rect.top > 0) {
+                // Before section: first card is fully visible at start
+                whyUsTrack.style.transform = 'translate3d(0px, 0, 0)';
+            } else if (rect.top <= 0 && rect.bottom >= window.innerHeight) {
+                // Scrolling inside section: smooth 1:1 progress
                 const currentScroll = Math.abs(rect.top);
                 const progress = Math.min(Math.max(currentScroll / totalScrollLength, 0), 1);
                 whyUsTrack.style.transform = `translate3d(-${progress * maxTranslate}px, 0, 0)`;
-            } else if (rect.top > 0) {
-                whyUsTrack.style.transform = 'translate3d(0px, 0, 0)';
             } else {
+                // Past section: stopped cleanly on the last card
                 whyUsTrack.style.transform = `translate3d(-${maxTranslate}px, 0, 0)`;
             }
             ticking = false;
         };
 
         const setSectionHeight = () => {
+            if (window.innerWidth <= 768) {
+                whyUsSection.style.height = 'auto';
+                whyUsTrack.style.transform = 'none';
+                return;
+            }
+            
             const maxTranslate = calculateMaxTranslate();
             if (maxTranslate > 0) {
                 whyUsSection.style.height = `${window.innerHeight + maxTranslate}px`;
