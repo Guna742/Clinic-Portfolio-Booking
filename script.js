@@ -363,6 +363,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const stickyWrapper = whyUsSection.querySelector('.sticky-wrapper');
 
         const updateScroll = () => {
+            const isMobile = window.innerWidth <= 768;
+            if (isMobile) {
+                whyUsTrack.style.transform = 'none';
+                ticking = false;
+                return;
+            }
+            
             const { maxTranslate } = getMetrics();
             if (maxTranslate <= 0) {
                 whyUsTrack.style.transform = 'translate3d(0px, 0, 0)';
@@ -370,8 +377,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             
-            const isMobile = window.innerWidth <= 768;
-            const stickyTop = isMobile ? 20 : 80;
+            const stickyTop = 80;
             const wrapperH = stickyWrapper ? stickyWrapper.offsetHeight : 450;
             const rect = whyUsSection.getBoundingClientRect();
             
@@ -390,6 +396,13 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         const setSectionHeight = () => {
+            const isMobile = window.innerWidth <= 768;
+            if (isMobile) {
+                whyUsSection.style.height = 'auto';
+                whyUsTrack.style.transform = 'none';
+                return;
+            }
+            
             const { maxTranslate } = getMetrics();
             const wrapperH = stickyWrapper ? stickyWrapper.offsetHeight : 450;
             if (maxTranslate > 0) {
