@@ -2904,6 +2904,28 @@ html, body { overflow-x: clip; max-width: 100%; }
     opacity: 1;
 }
 
+/* Disabled & Booked Time Slots */
+.dropdown-option.slot-disabled {
+    opacity: 0.45;
+    background: #f8fafc !important;
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+    filter: grayscale(0.6);
+}
+
+.dropdown-option.slot-passed {
+    border-left: 3px solid #ef4444;
+}
+
+.dropdown-option.slot-booked {
+    border-left: 3px solid #f59e0b;
+}
+
+.dropdown-option.slot-disabled .opt-title {
+    color: #94a3b8 !important;
+    text-decoration: line-through;
+}
+
 /* Icon Badges */
 .opt-icon {
     width: 34px;

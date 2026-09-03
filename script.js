@@ -1025,11 +1025,116 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentStep = 1;
 
+    // Time Slot Helpers & Availability System
+    function parseTimeToMinutes(timeStr) {
+        if (!timeStr) return -1;
+        const match = timeStr.trim().match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
+        if (!match) return -1;
+        let hours = parseInt(match[1], 10);
+        const minutes = parseInt(match[2], 10);
+        const modifier = match[3].toUpperCase();
+        if (modifier === 'PM' && hours < 12) hours += 12;
+        if (modifier === 'AM' && hours === 12) hours = 0;
+        return hours * 60 + minutes;
+    }
+
+    function getBookedSlots() {
+        try {
+            const data = localStorage.getItem('auraclinic_booked_slots');
+            return data ? JSON.parse(data) : [];
+        } catch (e) {
+            return [];
+        }
+    }
+
+    function saveBookedSlot(slotData) {
+        try {
+            const slots = getBookedSlots();
+            slots.push(slotData);
+            localStorage.setItem('auraclinic_booked_slots', JSON.stringify(slots));
+        } catch (e) {
+            console.error('Error saving booked slot:', e);
+        }
+    }
+
+    function updateTimeSlotAvailability() {
+        const dateInput = document.getElementById('booking-date-input');
+        const timeDropdown = document.getElementById('time-dropdown');
+        if (!timeDropdown) return;
+
+        const selectedDateStr = dateInput ? dateInput.value : '';
+        const bookedSlots = getBookedSlots();
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const todayStr = `${year}-${month}-${day}`;
+        const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+        const isToday = (selectedDateStr === todayStr);
+
+        const options = timeDropdown.querySelectorAll('.dropdown-option');
+        let currentSelectedValue = document.getElementById('booking-time-select')?.value;
+        let selectedSlotStillValid = false;
+
+        options.forEach(opt => {
+            const slotTime = opt.getAttribute('data-value');
+            const slotMinutes = parseTimeToMinutes(slotTime);
+            const optSub = opt.querySelector('.opt-sub');
+
+            // Default subtitle
+            let defaultSub = 'Morning slot';
+            if (slotMinutes >= 720 && slotMinutes < 1020) defaultSub = 'Afternoon slot';
+            if (slotMinutes >= 1020) defaultSub = 'Evening slot';
+
+            // Check if slot has already passed for today
+            const isPast = isToday && (slotMinutes <= currentMinutes);
+
+            // Check if slot is already booked by another user for this date
+            const isAlreadyBooked = selectedDateStr ? bookedSlots.some(b => b.date === selectedDateStr && b.time === slotTime) : false;
+
+            if (isPast) {
+                opt.classList.add('slot-disabled', 'slot-passed');
+                opt.classList.remove('active');
+                if (optSub) optSub.innerHTML = `<span style="color: #ef4444; font-weight: 600;">Passed (Unavailable today)</span>`;
+            } else if (isAlreadyBooked) {
+                opt.classList.add('slot-disabled', 'slot-booked');
+                opt.classList.remove('active');
+                if (optSub) optSub.innerHTML = `<span style="color: #f59e0b; font-weight: 600;">Already Booked</span>`;
+            } else {
+                opt.classList.remove('slot-disabled', 'slot-passed', 'slot-booked');
+                if (optSub) optSub.textContent = defaultSub;
+                if (currentSelectedValue === slotTime) {
+                    selectedSlotStillValid = true;
+                }
+            }
+        });
+
+        // If the previously selected slot became invalid (e.g. past time or booked), reset selection
+        if (currentSelectedValue && !selectedSlotStillValid) {
+            const hiddenInput = document.getElementById('booking-time-select');
+            if (hiddenInput) hiddenInput.value = '';
+            const selectedValContainer = timeDropdown.querySelector('.selected-value');
+            if (selectedValContainer) {
+                selectedValContainer.innerHTML = '<div class="opt-icon bg-slate-light"><i class="ph-duotone ph-clock"></i></div><span class="opt-text text-placeholder" style="color: #94a3b8;">Choose Time Slot...</span>';
+            }
+            updateBookingSummary();
+        }
+    }
+
     // Set minimum date on date picker to today
     const bookingDateInput = document.getElementById('booking-date-input');
     if (bookingDateInput) {
         const todayStr = new Date().toISOString().split('T')[0];
         bookingDateInput.min = todayStr;
+        bookingDateInput.addEventListener('change', () => {
+            updateTimeSlotAvailability();
+            updateBookingSummary();
+        });
+        bookingDateInput.addEventListener('input', () => {
+            updateTimeSlotAvailability();
+            updateBookingSummary();
+        });
     }
 
     // Custom UI Select Dropdown Initialization
@@ -1043,6 +1148,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (trigger) {
                 trigger.addEventListener('click', (e) => {
                     e.stopPropagation();
+                    if (dropdown.id === 'time-dropdown') {
+                        updateTimeSlotAvailability();
+                    }
                     document.querySelectorAll('.custom-dropdown-select.open').forEach(d => {
                         if (d !== dropdown) d.classList.remove('open');
                     });
@@ -1053,6 +1161,9 @@ document.addEventListener('DOMContentLoaded', () => {
             options.forEach(opt => {
                 opt.addEventListener('click', (e) => {
                     e.stopPropagation();
+                    if (opt.classList.contains('slot-disabled')) {
+                        return; // Disallow selecting passed or booked slots
+                    }
                     const val = opt.getAttribute('data-value');
                     const icon = opt.querySelector('.opt-icon') ? opt.querySelector('.opt-icon').cloneNode(true) : null;
                     const title = opt.querySelector('.opt-title') ? opt.querySelector('.opt-title').textContent : val;
@@ -1105,6 +1216,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 bookingDateInput.value = dateStr;
             }
         }
+        updateTimeSlotAvailability();
         updateBookingSummary();
 
         generalBookingModal.style.display = 'flex';
@@ -1140,6 +1252,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (stepNumber === 2) {
             autofillPatientDetails();
+            updateTimeSlotAvailability();
             updateBookingSummary();
         }
     }
@@ -1406,8 +1519,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            hideValidationWarning();
-
             const consultType = document.querySelector('input[name="consultation_type"]:checked')?.value || 'In-Person Clinic Visit';
             const dept = document.getElementById('booking-department')?.value || 'General Physician & Family Medicine';
             const doctor = document.getElementById('booking-doctor')?.value || 'First Available Specialist';
@@ -1418,11 +1529,49 @@ document.addEventListener('DOMContentLoaded', () => {
             const patientEmail = emailVal;
             const patientAge = ageVal;
 
+            // Validate that slot is not in the past (for today)
+            const slotMinutes = parseTimeToMinutes(timeVal);
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const todayStr = `${year}-${month}-${day}`;
+            const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+            if (dateVal === todayStr && slotMinutes <= currentMinutes) {
+                const timeDropdown = document.getElementById('time-dropdown')?.querySelector('.dropdown-trigger');
+                showValidationWarning('The selected time slot has already passed for today. Please choose an upcoming slot.', timeDropdown);
+                updateTimeSlotAvailability();
+                return;
+            }
+
+            // Validate that slot is not already booked by another user
+            const bookedSlots = getBookedSlots();
+            if (bookedSlots.some(b => b.date === dateVal && b.time === timeVal)) {
+                const timeDropdown = document.getElementById('time-dropdown')?.querySelector('.dropdown-trigger');
+                showValidationWarning('This time slot is already booked. Please choose another available time slot.', timeDropdown);
+                updateTimeSlotAvailability();
+                return;
+            }
+
+            hideValidationWarning();
+
+            // Lock slot to prevent other users from booking it
+            saveBookedSlot({
+                date: dateVal,
+                time: timeVal,
+                doctor: doctor,
+                patient: patientName
+            });
+            updateTimeSlotAvailability();
+
             // Automatically register and log the patient in with their Email + Password
             handleSuccessfulAuth({
                 name: patientName,
                 email: patientEmail,
-                phone: patientPhone
+                phone: patientPhone,
+                age: patientAge,
+                password: passwordVal
             }, true);
 
             const dateObj = new Date(dateVal + 'T00:00:00');
