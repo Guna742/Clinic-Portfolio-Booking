@@ -532,6 +532,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // USER AUTHENTICATION STATE & LOGGED-IN MANAGEMENT
     // ==========================================================
     const loginModal = document.getElementById('login-modal');
+    const almostThereView = document.getElementById('almost-there-view');
+    const authFormsView = document.getElementById('auth-forms-view');
+    const almostThereContinueBtn = document.getElementById('almost-there-continue-btn');
     const navLoginBtn = document.getElementById('nav-login-btn');
     const closeLoginBtn = document.getElementById('close-login-modal');
     const tabLogin = document.getElementById('tab-login');
@@ -591,8 +594,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function openLoginModal() {
+    function openLoginModal(showAlmostThere = false) {
         if (!loginModal) return;
+        
+        if (showAlmostThere) {
+            if (almostThereView) almostThereView.style.display = 'block';
+            if (authFormsView) authFormsView.style.display = 'none';
+        } else {
+            if (almostThereView) almostThereView.style.display = 'none';
+            if (authFormsView) authFormsView.style.display = 'block';
+        }
+
         loginModal.style.display = 'flex';
         requestAnimationFrame(() => {
             loginModal.classList.add('active');
@@ -608,17 +620,33 @@ document.addEventListener('DOMContentLoaded', () => {
             loginModal.style.display = 'none';
             if (authStatusMsg) authStatusMsg.style.display = 'none';
             if (bookingLoginAlert) bookingLoginAlert.style.display = 'none';
+            if (almostThereView) almostThereView.style.display = 'block';
+            if (authFormsView) authFormsView.style.display = 'none';
         }, 300);
+    }
+
+    // Continue button inside Almost There view triggers transition to Login Form section
+    if (almostThereContinueBtn) {
+        almostThereContinueBtn.addEventListener('click', () => {
+            if (almostThereView) almostThereView.style.display = 'none';
+            if (authFormsView) authFormsView.style.display = 'block';
+            if (bookingLoginAlert) bookingLoginAlert.style.display = 'flex';
+            if (tabLogin && tabRegister && loginForm && registerForm) {
+                tabLogin.classList.add('active');
+                tabRegister.classList.remove('active');
+                loginForm.style.display = 'block';
+                registerForm.style.display = 'none';
+            }
+            const emailInput = document.getElementById('login-email');
+            if (emailInput) setTimeout(() => emailInput.focus(), 150);
+        });
     }
 
     function promptLoginForBooking(targetDate = null) {
         pendingBooking = {
             date: targetDate || selectedDate || new Date()
         };
-        if (bookingLoginAlert) {
-            bookingLoginAlert.style.display = 'flex';
-        }
-        openLoginModal();
+        openLoginModal(true); // Open with "Almost There" prompt
     }
 
     function handleBookingRequest(targetDate = null) {
@@ -679,7 +707,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             pendingBooking = null;
             if (bookingLoginAlert) bookingLoginAlert.style.display = 'none';
-            openLoginModal();
+            openLoginModal(false); // Direct login form
         });
     }
 

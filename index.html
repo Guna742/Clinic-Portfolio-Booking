@@ -883,123 +883,155 @@
         </div>
     </footer>
 
-    <!-- LOGIN POPUP MODAL (Triggered on-demand or when clicking booking while signed out) -->
+    <!-- LOGIN & AUTH POPUP MODAL (Triggered on-demand or when clicking booking) -->
     <div id="login-modal" class="modal-backdrop-custom" style="display: none;">
         <div class="login-modal-dialog">
             <button class="modal-close-btn" id="close-login-modal" aria-label="Close modal">
                 <i class="ph ph-x"></i>
             </button>
             
-            <div class="login-header">
-                <div class="login-badge-icon">
-                    <i class="ph-fill ph-heartbeat"></i>
+            <!-- STEP A: "Almost There" View (Shown when clicking Book Appointment) -->
+            <div id="almost-there-view" class="almost-there-view">
+                <div class="almost-there-icon-badge">
+                    <i class="ph-fill ph-calendar-plus"></i>
                 </div>
-                <h3 class="login-title">AuraClinic Patient Portal</h3>
-                <p class="login-subtitle">Access your medical history, doctor consultations, and appointment passes.</p>
-            </div>
-
-            <!-- Booking Alert Notice -->
-            <div id="booking-login-alert" class="booking-login-alert" style="display: none;">
-                <i class="ph-fill ph-calendar-check"></i>
-                <span>Please sign in or create an account to book your appointment. You'll be redirected immediately.</span>
-            </div>
-
-            <!-- Tab Switcher -->
-            <div class="auth-tabs">
-                <button class="auth-tab active" id="tab-login" type="button">Sign In</button>
-                <button class="auth-tab" id="tab-register" type="button">Create Account</button>
-            </div>
-
-            <!-- Login Form -->
-            <form id="login-form" class="auth-form">
-                <div class="form-group-custom">
-                    <label for="login-email">Email or Patient ID</label>
-                    <div class="input-with-icon">
-                        <i class="ph ph-envelope-simple"></i>
-                        <input type="email" id="login-email" placeholder="patient@example.com" required>
+                <h3 class="almost-there-title">Almost There</h3>
+                <p class="almost-there-subtitle">You're just one step away from securing your appointment. Please continue to sign in or create your patient account.</p>
+                
+                <div class="almost-there-features">
+                    <div class="almost-feature-item">
+                        <i class="ph-fill ph-check-circle"></i>
+                        <span>Instant appointment confirmation & doctor scheduling</span>
+                    </div>
+                    <div class="almost-feature-item">
+                        <i class="ph-fill ph-check-circle"></i>
+                        <span>Secure digital prescription & consultation passes</span>
+                    </div>
+                    <div class="almost-feature-item">
+                        <i class="ph-fill ph-check-circle"></i>
+                        <span>SMS & email reminders directly to your contact</span>
                     </div>
                 </div>
 
-                <div class="form-group-custom">
-                    <div class="form-label-row">
-                        <label for="login-password">Password</label>
-                        <a href="javascript:void(0)" class="forgot-pwd-link" id="forgot-password-link">Forgot password?</a>
-                    </div>
-                    <div class="input-with-icon">
-                        <i class="ph ph-lock-key"></i>
-                        <input type="password" id="login-password" placeholder="••••••••" required>
-                        <button type="button" class="pwd-toggle-btn" id="toggle-login-pwd" aria-label="Toggle password visibility">
-                            <i class="ph ph-eye"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="form-check-custom">
-                    <input type="checkbox" id="remember-me" checked>
-                    <label for="remember-me">Remember me on this device</label>
-                </div>
-
-                <button type="submit" class="btn btn-primary-gradient auth-submit-btn">
-                    <span>Sign In to Portal</span>
+                <button type="button" class="btn btn-primary-gradient" id="almost-there-continue-btn" style="width: 100%; justify-content: center; height: 50px; font-size: 15px; font-weight: 600; border-radius: 9999px; margin-top: 24px; box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.35);">
+                    <span>Continue to Sign In</span>
                     <i class="ph ph-arrow-right"></i>
                 </button>
+            </div>
 
-                <div class="auth-divider">
-                    <span>or continue with</span>
+            <!-- STEP B: Login / Register Form Section (Shown on Continue click or direct Login button) -->
+            <div id="auth-forms-view" class="auth-forms-view" style="display: none;">
+                <div class="login-header">
+                    <div class="login-badge-icon">
+                        <i class="ph-fill ph-heartbeat"></i>
+                    </div>
+                    <h3 class="login-title">AuraClinic Patient Portal</h3>
+                    <p class="login-subtitle">Access your medical history, doctor consultations, and appointment passes.</p>
                 </div>
 
-                <div class="social-auth-buttons">
-                    <button type="button" class="social-btn">
-                        <i class="ph ph-google-logo"></i> Google
+                <!-- Booking Alert Notice -->
+                <div id="booking-login-alert" class="booking-login-alert" style="display: none;">
+                    <i class="ph-fill ph-calendar-check"></i>
+                    <span>Please sign in or create an account to book your appointment.</span>
+                </div>
+
+                <!-- Tab Switcher -->
+                <div class="auth-tabs">
+                    <button class="auth-tab active" id="tab-login" type="button">Sign In</button>
+                    <button class="auth-tab" id="tab-register" type="button">Create Account</button>
+                </div>
+
+                <!-- Login Form -->
+                <form id="login-form" class="auth-form">
+                    <div class="form-group-custom">
+                        <label for="login-email">Email or Patient ID</label>
+                        <div class="input-with-icon">
+                            <i class="ph ph-envelope-simple"></i>
+                            <input type="email" id="login-email" placeholder="patient@example.com" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <div class="form-label-row">
+                            <label for="login-password">Password</label>
+                            <a href="javascript:void(0)" class="forgot-pwd-link" id="forgot-password-link">Forgot password?</a>
+                        </div>
+                        <div class="input-with-icon">
+                            <i class="ph ph-lock-key"></i>
+                            <input type="password" id="login-password" placeholder="••••••••" required>
+                            <button type="button" class="pwd-toggle-btn" id="toggle-login-pwd" aria-label="Toggle password visibility">
+                                <i class="ph ph-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-check-custom">
+                        <input type="checkbox" id="remember-me" checked>
+                        <label for="remember-me">Remember me on this device</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary-gradient auth-submit-btn">
+                        <span>Sign In to Portal</span>
+                        <i class="ph ph-arrow-right"></i>
                     </button>
-                    <button type="button" class="social-btn">
-                        <i class="ph ph-apple-logo"></i> Apple
+
+                    <div class="auth-divider">
+                        <span>or continue with</span>
+                    </div>
+
+                    <div class="social-auth-buttons">
+                        <button type="button" class="social-btn">
+                            <i class="ph ph-google-logo"></i> Google
+                        </button>
+                        <button type="button" class="social-btn">
+                            <i class="ph ph-apple-logo"></i> Apple
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Register Form -->
+                <form id="register-form" class="auth-form" style="display: none;">
+                    <div class="form-group-custom">
+                        <label for="reg-name">Full Name</label>
+                        <div class="input-with-icon">
+                            <i class="ph ph-user"></i>
+                            <input type="text" id="reg-name" placeholder="e.g. John Doe">
+                        </div>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label for="reg-email">Email Address</label>
+                        <div class="input-with-icon">
+                            <i class="ph ph-envelope-simple"></i>
+                            <input type="email" id="reg-email" placeholder="patient@example.com">
+                        </div>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label for="reg-phone">Phone Number</label>
+                        <div class="input-with-icon">
+                            <i class="ph ph-phone"></i>
+                            <input type="tel" id="reg-phone" placeholder="(555) 000-0000">
+                        </div>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label for="reg-password">Create Password</label>
+                        <div class="input-with-icon">
+                            <i class="ph ph-lock-key"></i>
+                            <input type="password" id="reg-password" placeholder="At least 8 characters">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary-gradient auth-submit-btn">
+                        <span>Create Patient Account</span>
+                        <i class="ph ph-check-circle"></i>
                     </button>
-                </div>
-            </form>
+                </form>
 
-            <!-- Register Form -->
-            <form id="register-form" class="auth-form" style="display: none;">
-                <div class="form-group-custom">
-                    <label for="reg-name">Full Name</label>
-                    <div class="input-with-icon">
-                        <i class="ph ph-user"></i>
-                        <input type="text" id="reg-name" placeholder="e.g. John Doe">
-                    </div>
-                </div>
-
-                <div class="form-group-custom">
-                    <label for="reg-email">Email Address</label>
-                    <div class="input-with-icon">
-                        <i class="ph ph-envelope-simple"></i>
-                        <input type="email" id="reg-email" placeholder="patient@example.com">
-                    </div>
-                </div>
-
-                <div class="form-group-custom">
-                    <label for="reg-phone">Phone Number</label>
-                    <div class="input-with-icon">
-                        <i class="ph ph-phone"></i>
-                        <input type="tel" id="reg-phone" placeholder="(555) 000-0000">
-                    </div>
-                </div>
-
-                <div class="form-group-custom">
-                    <label for="reg-password">Create Password</label>
-                    <div class="input-with-icon">
-                        <i class="ph ph-lock-key"></i>
-                        <input type="password" id="reg-password" placeholder="At least 8 characters">
-                    </div>
-                </div>
-
-                <button type="submit" class="btn btn-primary-gradient auth-submit-btn">
-                    <span>Create Patient Account</span>
-                    <i class="ph ph-check-circle"></i>
-                </button>
-            </form>
-
-            <!-- Notification / Status Banner -->
-            <div id="auth-status-msg" class="auth-status-msg" style="display: none;"></div>
+                <!-- Notification / Status Banner -->
+                <div id="auth-status-msg" class="auth-status-msg" style="display: none;"></div>
+            </div>
         </div>
     </div>
 

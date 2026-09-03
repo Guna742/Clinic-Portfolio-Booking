@@ -1884,8 +1884,89 @@ html, body { overflow-x: clip; max-width: 100%; }
 }
 
 /* --------------------------------------------------------------------------
-   LOGIN MODAL STYLES
+   ALMOST THERE MODAL VIEW & LOGIN MODAL STYLES
    -------------------------------------------------------------------------- */
+.almost-there-view {
+    text-align: center;
+    padding: 10px 4px 6px;
+    animation: fadeInModalView 0.35s ease-out forwards;
+}
+
+.almost-there-icon-badge {
+    width: 64px;
+    height: 64px;
+    background: var(--grad-blue-teal);
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 30px;
+    margin: 0 auto 16px;
+    box-shadow: 0 10px 25px -4px rgba(37, 99, 235, 0.4);
+    animation: badgePulse 2.5s infinite ease-in-out;
+}
+
+@keyframes badgePulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 10px 25px -4px rgba(37, 99, 235, 0.4); }
+    50% { transform: scale(1.06); box-shadow: 0 14px 32px -4px rgba(20, 184, 166, 0.45); }
+}
+
+.almost-there-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    letter-spacing: -0.3px;
+}
+
+.almost-there-subtitle {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 22px;
+    max-width: 92%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.almost-there-features {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 16px 18px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.almost-feature-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: #334155;
+    line-height: 1.35;
+}
+
+.almost-feature-item i {
+    color: #10b981;
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.auth-forms-view {
+    animation: fadeInModalView 0.35s ease-out forwards;
+}
+
+@keyframes fadeInModalView {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
 .login-header {
     text-align: center;
     margin-bottom: 24px;
