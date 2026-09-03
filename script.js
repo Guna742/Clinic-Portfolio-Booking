@@ -360,33 +360,28 @@ document.addEventListener('DOMContentLoaded', () => {
             return { maxTranslate, leadIn, leadOut };
         };
 
+        const stickyWrapper = whyUsSection.querySelector('.sticky-wrapper');
+
         const updateScroll = () => {
-            const { maxTranslate, leadIn, leadOut } = getMetrics();
+            const { maxTranslate } = getMetrics();
             if (maxTranslate <= 0) {
                 whyUsTrack.style.transform = 'translate3d(0px, 0, 0)';
                 ticking = false;
                 return;
             }
             
+            const isMobile = window.innerWidth <= 768;
+            const stickyTop = isMobile ? 20 : 80;
+            const wrapperH = stickyWrapper ? stickyWrapper.offsetHeight : 450;
             const rect = whyUsSection.getBoundingClientRect();
             
-            if (rect.top > 0) {
-                // Above section: first card is fully visible and locked at start
+            if (rect.top > stickyTop) {
+                // Above section: locked at start
                 whyUsTrack.style.transform = 'translate3d(0px, 0, 0)';
-            } else if (rect.top <= 0 && rect.bottom >= window.innerHeight) {
-                const currentScroll = Math.abs(rect.top);
-                
-                if (currentScroll <= leadIn) {
-                    // Lead-in buffer: hold still at 0 so Card 1 is fully visible and stable before sliding begins
-                    whyUsTrack.style.transform = 'translate3d(0px, 0, 0)';
-                } else if (currentScroll >= leadIn + maxTranslate) {
-                    // Lead-out buffer: hold still at -maxTranslate so last card is fully visible before unpinning
-                    whyUsTrack.style.transform = `translate3d(-${maxTranslate}px, 0, 0)`;
-                } else {
-                    // Smooth linear progress between leadIn and leadIn + maxTranslate
-                    const progress = (currentScroll - leadIn) / maxTranslate;
-                    whyUsTrack.style.transform = `translate3d(-${progress * maxTranslate}px, 0, 0)`;
-                }
+            } else if (rect.top <= stickyTop && rect.bottom >= wrapperH + stickyTop) {
+                const currentScroll = stickyTop - rect.top;
+                const progress = Math.min(1, Math.max(0, currentScroll / maxTranslate));
+                whyUsTrack.style.transform = `translate3d(-${progress * maxTranslate}px, 0, 0)`;
             } else {
                 // Past section: stopped cleanly on the last card
                 whyUsTrack.style.transform = `translate3d(-${maxTranslate}px, 0, 0)`;
@@ -395,9 +390,10 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         const setSectionHeight = () => {
-            const { maxTranslate, leadIn, leadOut } = getMetrics();
+            const { maxTranslate } = getMetrics();
+            const wrapperH = stickyWrapper ? stickyWrapper.offsetHeight : 450;
             if (maxTranslate > 0) {
-                whyUsSection.style.height = `${window.innerHeight + maxTranslate + leadIn + leadOut}px`;
+                whyUsSection.style.height = `${wrapperH + maxTranslate}px`;
             } else {
                 whyUsSection.style.height = 'auto';
             }

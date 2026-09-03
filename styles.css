@@ -1555,15 +1555,15 @@ html, body {
     
     .sticky-wrapper {
         position: sticky !important;
-        top: 0 !important;
-        height: 100vh !important;
-        height: 100dvh !important;
+        top: 20px !important;
+        height: auto !important;
+        min-height: auto !important;
         display: flex !important;
         flex-direction: column !important;
-        justify-content: center !important;
+        justify-content: flex-start !important;
         align-items: flex-start !important;
         overflow: hidden !important;
-        padding: 10px 0 !important;
+        padding: 24px 0 16px !important;
         box-sizing: border-box !important;
         width: 100% !important;
     }
@@ -2064,14 +2064,14 @@ html, body {
 #why-us { position: relative; padding: 0 !important; margin: 0 !important; }
 .sticky-wrapper {
     position: sticky;
-    top: 0;
-    height: 100vh;
+    top: 80px;
+    height: auto;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: flex-start;
     overflow: hidden;
-    padding: 16px 0;
+    padding: 32px 0 24px;
     box-sizing: border-box;
     width: 100%;
 }
