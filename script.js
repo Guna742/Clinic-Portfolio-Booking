@@ -740,10 +740,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Also update input in booking form if open
             const patientPwdInput = document.getElementById('patient-password');
-            if (patientPwdInput) patientPwdInput.value = newPassword;
+            if (patientPwdInput) {
+                patientPwdInput.value = newPassword;
+            }
 
             if (forgotPwdStatus) {
-                forgotPwdStatus.textContent = 'Password updated successfully! You can now use your new password.';
+                forgotPwdStatus.textContent = 'Password updated successfully! Applying to your appointment details...';
                 forgotPwdStatus.style.display = 'block';
                 forgotPwdStatus.style.background = '#ecfdf5';
                 forgotPwdStatus.style.color = '#065f46';
@@ -751,7 +753,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             setTimeout(() => {
                 closeForgotPasswordModal();
-            }, 1400);
+                if (patientPwdInput) {
+                    patientPwdInput.classList.add('field-success-highlight');
+                    patientPwdInput.focus();
+                    setTimeout(() => patientPwdInput.classList.remove('field-success-highlight'), 2500);
+                }
+            }, 900);
         });
     }
 
