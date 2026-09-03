@@ -340,7 +340,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const firstCard = whyUsTrack.querySelector('.feature-card:first-child');
             const lastCard = whyUsTrack.querySelector('.feature-card:last-child');
             
-            if (!firstCard || !lastCard) return { maxTranslate: 0, leadIn: 0, leadOut: 0 };
+            if (!firstCard || !lastCard) return { maxTranslate: 0, leadIn: 0, leadOut: 0, stickyTop: 0 };
             
             // Save and temporarily reset transform for accurate offset measurement
             const savedTransform = whyUsTrack.style.transform;
@@ -352,61 +352,52 @@ document.addEventListener('DOMContentLoaded', () => {
             const targetRightEdge = window.innerWidth - firstCardLeft;
             const maxTranslate = Math.max(0, lastCardRight - targetRightEdge);
             
-            // Lead-in and lead-out buffers set to 0 to completely eliminate empty scroll gaps
-            const leadIn = 0;
-            const leadOut = 0;
+            const stickyTop = isMobile ? 20 : 70;
+            const leadIn = isMobile ? 20 : 40;
+            const leadOut = isMobile ? 20 : 40;
             
             whyUsTrack.style.transform = savedTransform;
-            return { maxTranslate, leadIn, leadOut };
+            return { maxTranslate, leadIn, leadOut, stickyTop };
         };
 
-        const stickyWrapper = whyUsSection.querySelector('.sticky-wrapper');
-
         const updateScroll = () => {
-            const isMobile = window.innerWidth <= 768;
-            if (isMobile) {
-                whyUsTrack.style.transform = 'none';
-                ticking = false;
-                return;
-            }
-            
-            const { maxTranslate } = getMetrics();
+            const { maxTranslate, leadIn, leadOut, stickyTop } = getMetrics();
             if (maxTranslate <= 0) {
                 whyUsTrack.style.transform = 'translate3d(0px, 0, 0)';
                 ticking = false;
                 return;
             }
             
-            const stickyTop = 80;
-            const wrapperH = stickyWrapper ? stickyWrapper.offsetHeight : 450;
             const rect = whyUsSection.getBoundingClientRect();
             
             if (rect.top > stickyTop) {
-                // Above section: locked at start
+                // Above section pinning point: first card is fully visible at start
                 whyUsTrack.style.transform = 'translate3d(0px, 0, 0)';
-            } else if (rect.top <= stickyTop && rect.bottom >= wrapperH + stickyTop) {
-                const currentScroll = stickyTop - rect.top;
-                const progress = Math.min(1, Math.max(0, currentScroll / maxTranslate));
-                whyUsTrack.style.transform = `translate3d(-${progress * maxTranslate}px, 0, 0)`;
+            } else if (rect.top <= stickyTop && rect.bottom >= window.innerHeight) {
+                const currentScroll = Math.abs(rect.top - stickyTop);
+                
+                if (currentScroll <= leadIn) {
+                    whyUsTrack.style.transform = 'translate3d(0px, 0, 0)';
+                } else if (currentScroll >= leadIn + maxTranslate) {
+                    whyUsTrack.style.transform = `translate3d(-${maxTranslate}px, 0, 0)`;
+                } else {
+                    const progress = (currentScroll - leadIn) / maxTranslate;
+                    whyUsTrack.style.transform = `translate3d(-${progress * maxTranslate}px, 0, 0)`;
+                }
             } else {
-                // Past section: stopped cleanly on the last card
+                // Past section
                 whyUsTrack.style.transform = `translate3d(-${maxTranslate}px, 0, 0)`;
             }
             ticking = false;
         };
 
         const setSectionHeight = () => {
-            const isMobile = window.innerWidth <= 768;
-            if (isMobile) {
-                whyUsSection.style.height = 'auto';
-                whyUsTrack.style.transform = 'none';
-                return;
-            }
+            const { maxTranslate, leadIn, leadOut, stickyTop } = getMetrics();
+            const stickyWrapper = whyUsSection.querySelector('.sticky-wrapper');
+            const wrapperHeight = stickyWrapper ? stickyWrapper.offsetHeight : (window.innerWidth <= 768 ? 360 : 440);
             
-            const { maxTranslate } = getMetrics();
-            const wrapperH = stickyWrapper ? stickyWrapper.offsetHeight : 450;
             if (maxTranslate > 0) {
-                whyUsSection.style.height = `${wrapperH + maxTranslate}px`;
+                whyUsSection.style.height = `${wrapperHeight + stickyTop + maxTranslate + leadIn + leadOut}px`;
             } else {
                 whyUsSection.style.height = 'auto';
             }
