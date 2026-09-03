@@ -2238,10 +2238,12 @@ html, body { overflow-x: clip; max-width: 100%; }
 .booking-stepper {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    margin-bottom: 28px;
+    justify-content: flex-start;
+    margin-bottom: 22px;
     position: relative;
-    padding: 0 10px;
+    padding-right: 50px;
+    max-width: calc(100% - 50px);
+    box-sizing: border-box;
 }
 
 .step-indicator {
@@ -2250,15 +2252,16 @@ html, body { overflow-x: clip; max-width: 100%; }
     gap: 8px;
     z-index: 2;
     cursor: default;
+    flex-shrink: 0;
 }
 
 .step-num {
-    width: 32px;
-    height: 32px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     background: #f1f5f9;
     color: var(--text-muted);
-    font-size: 13.5px;
+    font-size: 13px;
     font-weight: 700;
     display: flex;
     align-items: center;
@@ -2268,10 +2271,11 @@ html, body { overflow-x: clip; max-width: 100%; }
 }
 
 .step-text {
-    font-size: 13px;
+    font-size: 12.5px;
     font-weight: 600;
     color: var(--text-muted);
     transition: all 0.3s ease;
+    white-space: nowrap;
 }
 
 .step-indicator.active .step-num {
@@ -2294,14 +2298,61 @@ html, body { overflow-x: clip; max-width: 100%; }
 }
 
 .step-line {
-    flex: 1;
+    flex: 0 0 40px;
     height: 2px;
     background: #e2e8f0;
-    margin: 0 12px;
+    margin: 0 10px;
+}
+
+/* Validation Warning Pop-up Alert Toast */
+.booking-validation-toast {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #fef2f2;
+    border: 1.5px solid #fecaca;
+    color: #991b1b;
+    padding: 11px 16px;
+    border-radius: 12px;
+    font-size: 13.5px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 14px rgba(239, 68, 68, 0.12);
+    animation: toastSlideDown 0.35s cubic-bezier(0.16, 1, 0.3, 1), toastShake 0.4s ease 0.1s;
+}
+
+.booking-validation-toast i {
+    font-size: 20px;
+    color: #ef4444;
+    flex-shrink: 0;
+}
+
+@keyframes toastSlideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes toastShake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-5px); }
+    40%, 80% { transform: translateX(5px); }
+}
+
+.field-error {
+    border-color: #ef4444 !important;
+    background: #fff5f5 !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
+    animation: fieldShake 0.4s ease !important;
+}
+
+@keyframes fieldShake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-4px); }
+    40%, 80% { transform: translateX(4px); }
 }
 
 .step-header {
-    margin-bottom: 24px;
+    margin-bottom: 22px;
 }
 
 .step-title {

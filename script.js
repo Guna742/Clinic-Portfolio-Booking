@@ -1031,10 +1031,48 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    const validationToast = document.getElementById('booking-validation-toast');
+    const validationToastText = document.getElementById('validation-toast-text');
+
+    function showValidationWarning(message, targetElement = null) {
+        if (!validationToast) return;
+        if (validationToastText) validationToastText.textContent = message;
+
+        validationToast.style.display = 'flex';
+        // Re-trigger animation
+        validationToast.style.animation = 'none';
+        validationToast.offsetHeight; /* trigger reflow */
+        validationToast.style.animation = null;
+
+        if (targetElement) {
+            targetElement.classList.add('field-error');
+            if (typeof targetElement.focus === 'function') targetElement.focus();
+            setTimeout(() => {
+                targetElement.classList.remove('field-error');
+            }, 2500);
+        }
+
+        const dialog = document.querySelector('.booking-modal-dialog');
+        if (dialog) dialog.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function hideValidationWarning() {
+        if (validationToast) validationToast.style.display = 'none';
+    }
+
     // Next / Prev Step Navigation Buttons
     document.querySelectorAll('.next-step-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const nextStep = parseInt(btn.getAttribute('data-next'));
+            if (nextStep === 2) {
+                const deptInput = document.getElementById('booking-department');
+                if (!deptInput || !deptInput.value) {
+                    const deptDropdown = document.getElementById('department-dropdown')?.querySelector('.dropdown-trigger');
+                    showValidationWarning('Please select a Medical Department before continuing.', deptDropdown);
+                    return;
+                }
+            }
+            hideValidationWarning();
             goToStep(nextStep);
         });
     });
@@ -1042,6 +1080,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.prev-step-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const prevStep = parseInt(btn.getAttribute('data-prev'));
+            hideValidationWarning();
             goToStep(prevStep);
         });
     });
@@ -1056,16 +1095,51 @@ document.addEventListener('DOMContentLoaded', () => {
         comprehensiveBookingForm.addEventListener('submit', (e) => {
             e.preventDefault();
 
+            const dateInput = document.getElementById('booking-date-input');
+            const timeInput = document.getElementById('booking-time-select');
+            const nameInput = document.getElementById('patient-fullname');
+            const phoneInput = document.getElementById('patient-phone');
+            const emailInput = document.getElementById('patient-email');
+
+            if (!dateInput || !dateInput.value) {
+                showValidationWarning('Please select your preferred appointment date.', dateInput);
+                return;
+            }
+
+            if (!timeInput || !timeInput.value) {
+                const timeDropdown = document.getElementById('time-dropdown')?.querySelector('.dropdown-trigger');
+                showValidationWarning('Please choose your preferred time slot.', timeDropdown);
+                return;
+            }
+
+            if (!nameInput || !nameInput.value.trim()) {
+                showValidationWarning('Please enter your Full Name to proceed.', nameInput);
+                return;
+            }
+
+            const phoneVal = phoneInput ? phoneInput.value.trim() : '';
+            if (!phoneVal || phoneVal.replace(/\D/g, '').length < 7) {
+                showValidationWarning('Please enter a valid Mobile Number (at least 7 digits).', phoneInput);
+                return;
+            }
+
+            const emailVal = emailInput ? emailInput.value.trim() : '';
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailVal || !emailRegex.test(emailVal)) {
+                showValidationWarning('Please enter a valid Email Address.', emailInput);
+                return;
+            }
+
+            hideValidationWarning();
+
             const consultType = document.querySelector('input[name="consultation_type"]:checked')?.value || 'In-Person Clinic Visit';
-            const dept = document.getElementById('booking-department')?.value || 'General Physician';
+            const dept = document.getElementById('booking-department')?.value || 'General Physician & Family Medicine';
             const doctor = document.getElementById('booking-doctor')?.value || 'First Available Specialist';
-            const reason = document.querySelector('input[name="visit_reason"]:checked')?.value || 'General Health Consultation';
-            const patientType = document.querySelector('input[name="patient_history"]:checked')?.value || 'New Patient';
             const dateVal = bookingDateInput ? bookingDateInput.value : '';
             const timeVal = document.getElementById('booking-time-select')?.value || '09:00 AM';
-            const patientName = document.getElementById('patient-fullname')?.value || 'Valued Patient';
-            const patientPhone = document.getElementById('patient-phone')?.value || '';
-            const patientEmail = document.getElementById('patient-email')?.value || '';
+            const patientName = nameInput.value.trim();
+            const patientPhone = phoneVal;
+            const patientEmail = emailVal;
 
             const dateObj = new Date(dateVal + 'T00:00:00');
             const formattedDate = isNaN(dateObj) ? dateVal : dateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
@@ -1082,14 +1156,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         <strong style="color: var(--clr-blue); font-family: monospace; font-size: 15px;">#${refNumber}</strong>
                     </div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px;">
-                        <p><strong>Patient:</strong> ${patientName} (${patientType})</p>
+                        <p><strong>Patient:</strong> ${patientName}</p>
                         <p><strong>Mode:</strong> <span style="color: ${isOnline ? 'var(--clr-teal)' : 'var(--clr-blue)'}; font-weight: 600;">${consultType}</span></p>
                         <p><strong>Specialty:</strong> ${dept}</p>
                         <p><strong>Doctor:</strong> ${doctor}</p>
                         <p><strong>Scheduled:</strong> ${formattedDate}</p>
                         <p><strong>Time Slot:</strong> ${timeVal}</p>
-                        <p><strong>Reason:</strong> ${reason}</p>
                         <p><strong>Contact:</strong> ${patientPhone}</p>
+                        <p><strong>Email:</strong> ${patientEmail}</p>
                     </div>
                 `;
             }
