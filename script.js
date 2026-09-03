@@ -340,28 +340,23 @@ document.addEventListener('DOMContentLoaded', () => {
             const firstCard = whyUsTrack.querySelector('.feature-card:first-child');
             const lastCard = whyUsTrack.querySelector('.feature-card:last-child');
             
-            if (!firstCard || !lastCard) return { maxTranslate: 0, leadIn: 0, leadOut: 0, stickyTop: 0 };
+            if (!firstCard || !lastCard) return { maxTranslate: 0 };
             
             // Save and temporarily reset transform for accurate offset measurement
             const savedTransform = whyUsTrack.style.transform;
             whyUsTrack.style.transform = 'none';
             
-            const isMobile = window.innerWidth <= 768;
             const firstCardLeft = firstCard.offsetLeft;
             const lastCardRight = lastCard.offsetLeft + lastCard.offsetWidth;
             const targetRightEdge = window.innerWidth - firstCardLeft;
             const maxTranslate = Math.max(0, lastCardRight - targetRightEdge);
             
-            const stickyTop = isMobile ? 20 : 70;
-            const leadIn = isMobile ? 20 : 40;
-            const leadOut = isMobile ? 20 : 40;
-            
             whyUsTrack.style.transform = savedTransform;
-            return { maxTranslate, leadIn, leadOut, stickyTop };
+            return { maxTranslate };
         };
 
         const updateScroll = () => {
-            const { maxTranslate, leadIn, leadOut, stickyTop } = getMetrics();
+            const { maxTranslate } = getMetrics();
             if (maxTranslate <= 0) {
                 whyUsTrack.style.transform = 'translate3d(0px, 0, 0)';
                 ticking = false;
@@ -370,34 +365,24 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const rect = whyUsSection.getBoundingClientRect();
             
-            if (rect.top > stickyTop) {
-                // Above section pinning point: first card is fully visible at start
+            if (rect.top > 0) {
+                // Above section: first card is fully visible at start
                 whyUsTrack.style.transform = 'translate3d(0px, 0, 0)';
-            } else if (rect.top <= stickyTop && rect.bottom >= window.innerHeight) {
-                const currentScroll = Math.abs(rect.top - stickyTop);
-                
-                if (currentScroll <= leadIn) {
-                    whyUsTrack.style.transform = 'translate3d(0px, 0, 0)';
-                } else if (currentScroll >= leadIn + maxTranslate) {
-                    whyUsTrack.style.transform = `translate3d(-${maxTranslate}px, 0, 0)`;
-                } else {
-                    const progress = (currentScroll - leadIn) / maxTranslate;
-                    whyUsTrack.style.transform = `translate3d(-${progress * maxTranslate}px, 0, 0)`;
-                }
+            } else if (rect.top <= 0 && rect.bottom >= window.innerHeight) {
+                const scrolled = Math.abs(rect.top);
+                const progress = Math.min(1, Math.max(0, scrolled / maxTranslate));
+                whyUsTrack.style.transform = `translate3d(-${progress * maxTranslate}px, 0, 0)`;
             } else {
-                // Past section
+                // Past section: pinned at final position
                 whyUsTrack.style.transform = `translate3d(-${maxTranslate}px, 0, 0)`;
             }
             ticking = false;
         };
 
         const setSectionHeight = () => {
-            const { maxTranslate, leadIn, leadOut, stickyTop } = getMetrics();
-            const stickyWrapper = whyUsSection.querySelector('.sticky-wrapper');
-            const wrapperHeight = stickyWrapper ? stickyWrapper.offsetHeight : (window.innerWidth <= 768 ? 360 : 440);
-            
+            const { maxTranslate } = getMetrics();
             if (maxTranslate > 0) {
-                whyUsSection.style.height = `${wrapperHeight + stickyTop + maxTranslate + leadIn + leadOut}px`;
+                whyUsSection.style.height = `${window.innerHeight + maxTranslate}px`;
             } else {
                 whyUsSection.style.height = 'auto';
             }

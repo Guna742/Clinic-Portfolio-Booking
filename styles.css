@@ -1549,27 +1549,27 @@ html, body {
     
     #why-us {
         position: relative !important;
-        padding: 20px 0 16px !important;
+        padding: 0 !important;
         margin: 0 !important;
     }
     
     .sticky-wrapper {
         position: sticky !important;
-        top: 20px !important;
-        height: auto !important;
-        min-height: 0 !important;
+        top: 0 !important;
+        height: 100vh !important;
+        height: 100dvh !important;
         display: flex !important;
         flex-direction: column !important;
-        justify-content: flex-start !important;
+        justify-content: center !important;
         align-items: flex-start !important;
         overflow: hidden !important;
-        padding: 8px 0 12px !important;
+        padding: 20px 0 !important;
         box-sizing: border-box !important;
         width: 100% !important;
     }
     
     .why-us-header {
-        margin-bottom: 14px !important;
+        margin-bottom: 20px !important;
         padding: 0 20px !important;
         text-align: center !important;
         width: 100% !important;
@@ -1577,12 +1577,12 @@ html, body {
     
     .why-us-header .section-title {
         font-size: 24px !important;
-        margin-bottom: 4px !important;
+        margin-bottom: 6px !important;
     }
     
     .why-us-header .section-subtitle {
         font-size: 13.5px !important;
-        line-height: 1.35 !important;
+        line-height: 1.4 !important;
         max-width: 100% !important;
     }
     
@@ -2060,18 +2060,18 @@ html, body {
     transition: box-shadow 0.3s ease, border-color 0.3s ease !important;
 }
 
-#why-us { position: relative; padding: 36px 0 28px !important; margin: 0 !important; }
+#why-us { position: relative; padding: 0 !important; margin: 0 !important; }
 .sticky-wrapper {
     position: sticky;
-    top: 70px;
-    height: auto;
-    min-height: 0;
+    top: 0;
+    height: 100vh;
+    height: 100dvh;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: flex-start;
     overflow: hidden;
-    padding: 14px 0 18px;
+    padding: 24px 0;
     box-sizing: border-box;
     width: 100%;
 }
