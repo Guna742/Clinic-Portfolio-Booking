@@ -3662,4 +3662,130 @@ html, body { overflow-x: clip; max-width: 100%; }
     border-top: 1px solid #f1f5f9;
 }
 
+/* Mobile Responsive Optimization for Service Details & Cards */
+@media (max-width: 768px) {
+    .services-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .service-card {
+        padding: 24px 20px;
+        border-radius: 18px;
+    }
+
+    .service-icon {
+        font-size: 34px;
+        margin-bottom: 14px;
+    }
+
+    .service-title {
+        font-size: 19px;
+        margin-bottom: 8px;
+    }
+
+    .service-text {
+        font-size: 13.5px;
+        line-height: 1.5;
+        margin-bottom: 16px;
+    }
+
+    .service-details-dialog {
+        padding: 20px 16px 16px;
+        border-radius: 20px;
+        max-height: 85vh;
+        margin: 10px;
+        width: calc(100% - 20px);
+    }
+
+    .service-modal-header {
+        gap: 12px;
+        margin-bottom: 14px;
+        padding-bottom: 12px;
+        padding-right: 32px;
+    }
+
+    .service-modal-icon-badge {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        font-size: 20px;
+    }
+
+    .service-modal-title {
+        font-size: 17.5px;
+        margin-bottom: 2px;
+    }
+
+    .service-modal-subtitle {
+        font-size: 12px;
+    }
+
+    .svc-section-heading {
+        font-size: 13px;
+        margin-bottom: 6px;
+    }
+
+    .svc-desc-text {
+        font-size: 12.5px;
+        line-height: 1.5;
+        margin-bottom: 14px;
+    }
+
+    .svc-treatments-grid {
+        grid-template-columns: 1fr;
+        gap: 6px;
+        margin-bottom: 14px;
+    }
+
+    .svc-treatment-item {
+        padding: 8px 10px;
+        font-size: 12px;
+        border-radius: 10px;
+        gap: 8px;
+    }
+
+    .svc-treatment-item i {
+        font-size: 14px;
+    }
+
+    .svc-specialists-list {
+        gap: 7px;
+        margin-bottom: 14px;
+    }
+
+    .svc-specialist-card {
+        padding: 8px 10px;
+        border-radius: 10px;
+    }
+
+    .svc-specialist-avatar {
+        width: 32px;
+        height: 32px;
+        font-size: 12px;
+    }
+
+    .svc-specialist-info h5 {
+        font-size: 12.5px;
+    }
+
+    .svc-specialist-info p {
+        font-size: 11px;
+    }
+
+    .service-modal-footer {
+        flex-direction: column-reverse;
+        gap: 8px;
+        padding-top: 14px;
+    }
+
+    .service-modal-footer button {
+        width: 100%;
+        justify-content: center;
+        height: 42px !important;
+        font-size: 13px !important;
+        padding: 0 14px !important;
+    }
+}
+
 
