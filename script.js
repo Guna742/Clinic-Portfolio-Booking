@@ -989,6 +989,24 @@ document.addEventListener('DOMContentLoaded', () => {
         if (bookingDateInput) bookingDateInput.value = '';
         const ageInput = document.getElementById('patient-age');
         if (ageInput) ageInput.value = '';
+        const patientPwdInput = document.getElementById('patient-password');
+        if (patientPwdInput) {
+            patientPwdInput.value = '';
+            patientPwdInput.type = 'password';
+            const togglePatientPwd = document.getElementById('toggle-patient-password');
+            if (togglePatientPwd) togglePatientPwd.innerHTML = '<i class="ph ph-eye"></i>';
+        }
+    }
+
+    // Password visibility toggle on booking form
+    const togglePatientPwd = document.getElementById('toggle-patient-password');
+    const patientPwdInput = document.getElementById('patient-password');
+    if (togglePatientPwd && patientPwdInput) {
+        togglePatientPwd.addEventListener('click', () => {
+            const isPassword = patientPwdInput.type === 'password';
+            patientPwdInput.type = isPassword ? 'text' : 'password';
+            togglePatientPwd.innerHTML = isPassword ? '<i class="ph ph-eye-slash"></i>' : '<i class="ph ph-eye"></i>';
+        });
     }
 
     function updateBookingSummary() {
@@ -1142,6 +1160,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const phoneInput = document.getElementById('patient-phone');
             const emailInput = document.getElementById('patient-email');
             const ageInput = document.getElementById('patient-age');
+            const passwordInput = document.getElementById('patient-password');
 
             if (!dateInput || !dateInput.value) {
                 showValidationWarning('Please select your preferred appointment date.', dateInput);
@@ -1178,6 +1197,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+            const passwordVal = passwordInput ? passwordInput.value : '';
+            if (!passwordVal || passwordVal.length < 6) {
+                showValidationWarning('Please create a password for your account (at least 6 characters).', passwordInput);
+                return;
+            }
+
             hideValidationWarning();
 
             const consultType = document.querySelector('input[name="consultation_type"]:checked')?.value || 'In-Person Clinic Visit';
@@ -1189,6 +1214,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const patientPhone = phoneVal;
             const patientEmail = emailVal;
             const patientAge = ageVal;
+
+            // Automatically register and log the patient in with their Email + Password
+            handleSuccessfulAuth({
+                name: patientName,
+                email: patientEmail,
+                phone: patientPhone
+            }, true);
 
             const dateObj = new Date(dateVal + 'T00:00:00');
             const formattedDate = isNaN(dateObj) ? dateVal : dateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
@@ -1212,7 +1244,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <p><strong>Scheduled:</strong> ${formattedDate}</p>
                         <p><strong>Time Slot:</strong> ${timeVal}</p>
                         <p><strong>Contact:</strong> ${patientPhone}</p>
-                        <p><strong>Email:</strong> ${patientEmail}</p>
+                        <p><strong>Email / Login:</strong> ${patientEmail}</p>
                     </div>
                 `;
             }
@@ -1220,9 +1252,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const noticeText = document.getElementById('channel-notice-text');
             if (noticeText) {
                 if (isOnline) {
-                    noticeText.textContent = `A secure encrypted HD video consultation link and digital pass have been sent to ${patientEmail} and ${patientPhone}.`;
+                    noticeText.textContent = `A secure encrypted HD video consultation link and patient portal access have been sent to ${patientEmail} and ${patientPhone}.`;
                 } else {
-                    noticeText.textContent = `Appointment confirmation and clinic entrance pass have been sent to ${patientPhone} and ${patientEmail}.`;
+                    noticeText.textContent = `Appointment confirmation and patient portal login details have been sent to ${patientPhone} and ${patientEmail}.`;
                 }
             }
 
