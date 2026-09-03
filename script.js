@@ -336,42 +336,64 @@ document.addEventListener('DOMContentLoaded', () => {
     if (whyUsSection && whyUsTrack) {
         let ticking = false;
         
-        // Dynamically set section height so scroll speed is exactly 1:1
+        const calculateMaxTranslate = () => {
+            const firstCard = whyUsTrack.querySelector('.feature-card:first-child');
+            const lastCard = whyUsTrack.querySelector('.feature-card:last-child');
+            
+            if (!firstCard || !lastCard) return 0;
+            
+            const firstCardLeft = firstCard.offsetLeft;
+            const lastCardRight = lastCard.offsetLeft + lastCard.offsetWidth;
+            const targetRightEdge = window.innerWidth - firstCardLeft;
+            const maxTranslate = Math.max(0, lastCardRight - targetRightEdge);
+            
+            return maxTranslate;
+        };
+
+        const updateScroll = () => {
+            const maxTranslate = calculateMaxTranslate();
+            if (maxTranslate <= 0) {
+                whyUsTrack.style.transform = 'translate3d(0px, 0, 0)';
+                ticking = false;
+                return;
+            }
+            
+            const rect = whyUsSection.getBoundingClientRect();
+            const totalScrollLength = whyUsSection.offsetHeight - window.innerHeight;
+            
+            if (totalScrollLength <= 0) {
+                whyUsTrack.style.transform = 'translate3d(0px, 0, 0)';
+                ticking = false;
+                return;
+            }
+            
+            if (rect.top <= 0 && rect.bottom >= window.innerHeight) {
+                const currentScroll = Math.abs(rect.top);
+                const progress = Math.min(Math.max(currentScroll / totalScrollLength, 0), 1);
+                whyUsTrack.style.transform = `translate3d(-${progress * maxTranslate}px, 0, 0)`;
+            } else if (rect.top > 0) {
+                whyUsTrack.style.transform = 'translate3d(0px, 0, 0)';
+            } else {
+                whyUsTrack.style.transform = `translate3d(-${maxTranslate}px, 0, 0)`;
+            }
+            ticking = false;
+        };
+
         const setSectionHeight = () => {
-            // Early returns removed to enable desktop scroll
-            const maxTranslate = whyUsTrack.scrollWidth - window.innerWidth;
+            const maxTranslate = calculateMaxTranslate();
             if (maxTranslate > 0) {
                 whyUsSection.style.height = `${window.innerHeight + maxTranslate}px`;
             } else {
                 whyUsSection.style.height = 'auto';
             }
+            updateScroll();
         };
 
-        const updateScroll = () => {
-            // Early returns removed to enable desktop scroll
-            const rect = whyUsSection.getBoundingClientRect();
-            if (rect.top <= 0 && rect.bottom >= window.innerHeight) {
-                const totalScrollLength = rect.height - window.innerHeight;
-                const currentScroll = Math.abs(rect.top);
-                const scrollProgress = currentScroll / totalScrollLength;
-                const maxTranslate = whyUsTrack.scrollWidth - window.innerWidth;
-                
-                if (maxTranslate > 0) {
-                    whyUsTrack.style.transform = `translateX(-${scrollProgress * maxTranslate}px)`;
-                }
-            } else if (rect.top > 0) {
-                whyUsTrack.style.transform = `translateX(0px)`;
-            } else {
-                const maxTranslate = whyUsTrack.scrollWidth - window.innerWidth;
-                if (maxTranslate > 0) {
-                    whyUsTrack.style.transform = `translateX(-${maxTranslate}px)`;
-                }
-            }
-            ticking = false;
-        };
-        
-        window.addEventListener('resize', setSectionHeight);
-        setSectionHeight(); // Initial set
+        window.addEventListener('resize', setSectionHeight, { passive: true });
+        window.addEventListener('orientationchange', setSectionHeight, { passive: true });
+        window.addEventListener('load', setSectionHeight);
+        setTimeout(setSectionHeight, 150);
+        setTimeout(setSectionHeight, 600);
         
         window.addEventListener('scroll', () => {
             if (!ticking) {
@@ -379,6 +401,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 ticking = true;
             }
         }, { passive: true });
+        
+        setSectionHeight(); // Initial set
     }
 
     // ==========================================
