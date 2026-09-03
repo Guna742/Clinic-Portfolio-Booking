@@ -328,7 +328,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // ==========================================
-    // Horizontal Scroll for "Why Choose Us" (Desktop & Mobile)
+    // Horizontal Scroll for "Why Choose Us"
     // ==========================================
     const whyUsSection = document.getElementById('why-us');
     const whyUsTrack = document.getElementById('why-choose-us-track');
@@ -337,6 +337,10 @@ document.addEventListener('DOMContentLoaded', () => {
         let ticking = false;
         
         const getMetrics = () => {
+            if (window.innerWidth <= 768) {
+                return { maxTranslate: 0, leadIn: 0, leadOut: 0 };
+            }
+            
             const firstCard = whyUsTrack.querySelector('.feature-card:first-child');
             const lastCard = whyUsTrack.querySelector('.feature-card:last-child');
             
@@ -346,21 +350,26 @@ document.addEventListener('DOMContentLoaded', () => {
             const savedTransform = whyUsTrack.style.transform;
             whyUsTrack.style.transform = 'none';
             
-            const isMobile = window.innerWidth <= 768;
             const firstCardLeft = firstCard.offsetLeft;
             const lastCardRight = lastCard.offsetLeft + lastCard.offsetWidth;
             const targetRightEdge = window.innerWidth - firstCardLeft;
             const maxTranslate = Math.max(0, lastCardRight - targetRightEdge);
             
             // Lead-in and lead-out buffers prevent premature sliding and ensure first & last cards are fully seen
-            const leadIn = isMobile ? 120 : 200;
-            const leadOut = isMobile ? 120 : 200;
+            const leadIn = 160;
+            const leadOut = 160;
             
             whyUsTrack.style.transform = savedTransform;
             return { maxTranslate, leadIn, leadOut };
         };
 
         const updateScroll = () => {
+            if (window.innerWidth <= 768) {
+                whyUsTrack.style.transform = 'none';
+                ticking = false;
+                return;
+            }
+            
             const { maxTranslate, leadIn, leadOut } = getMetrics();
             if (maxTranslate <= 0) {
                 whyUsTrack.style.transform = 'translate3d(0px, 0, 0)';
@@ -395,6 +404,12 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         const setSectionHeight = () => {
+            if (window.innerWidth <= 768) {
+                whyUsSection.style.height = 'auto';
+                whyUsTrack.style.transform = 'none';
+                return;
+            }
+            
             const { maxTranslate, leadIn, leadOut } = getMetrics();
             if (maxTranslate > 0) {
                 whyUsSection.style.height = `${window.innerHeight + maxTranslate + leadIn + leadOut}px`;
