@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ==========================================
-    // Dynamic Booking Calendar Logic (Inline)
+    // Dynamic Booking Calendar & Time Selection Popup
     // ==========================================
     const calendarDaysContainer = document.getElementById('calendar-days-container');
     const monthYearDisplay = document.getElementById('calendar-month-year');
@@ -34,43 +34,150 @@ document.addEventListener('DOMContentLoaded', () => {
     const nextMonthBtn = document.getElementById('next-month');
     const selectDateBtn = document.getElementById('select-date-btn');
     
-    const timeSelectionSection = document.getElementById('time-selection-section');
-    const selectedDateDisplay = document.getElementById('selected-date-display');
-    const timeSlotsContainer = document.getElementById('time-slots-container');
-    const mobileInput = document.getElementById('mobile-number-input');
-    const confirmBtn = document.getElementById('confirm-booking-btn');
+    // Quick Time Selection Modal Elements
+    const quickBookingModal = document.getElementById('quick-booking-modal');
+    const closeQuickBookingBtn = document.getElementById('close-quick-booking-modal');
+    const modalDateDisplay = document.getElementById('modal-date-display');
+    const modalTimeSlotsContainer = document.getElementById('modal-time-slots-container');
+    const modalMobileInput = document.getElementById('modal-mobile-input');
+    const modalConfirmBtn = document.getElementById('modal-confirm-booking-btn');
+    
+    // Success Modal Elements
+    const successModal = document.getElementById('success-modal');
+    const successDetails = document.getElementById('success-details');
+    const closeSuccessBtn = document.getElementById('close-success-btn');
     
     let currentDate = new Date();
     let currentMonth = currentDate.getMonth();
     let currentYear = currentDate.getFullYear();
-    let selectedDate = null;
+    let selectedDate = new Date();
+    selectedDate.setHours(0, 0, 0, 0);
     let selectedTime = null;
     
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     
-    // Expanded times to include evening slots
-    const times = ["09:00 AM", "09:30 AM", "10:00 AM", "10:30 AM", "11:00 AM", "11:30 AM", "02:00 PM", "02:30 PM", "03:00 PM", "04:00 PM", "05:00 PM", "06:00 PM", "07:00 PM", "07:30 PM", "08:00 PM", "08:30 PM", "09:00 PM"];
+    // Exact list of 17 time slots requested
+    const times = [
+        "09:00 AM", "09:30 AM", "10:00 AM", "10:30 AM", 
+        "11:00 AM", "11:30 AM", "02:00 PM", "02:30 PM", 
+        "03:00 PM", "04:00 PM", "05:00 PM", "06:00 PM", 
+        "07:00 PM", "07:30 PM", "08:00 PM", "08:30 PM", "09:00 PM"
+    ];
     
+    function formatLongDate(dateObj) {
+        if (!dateObj) return '';
+        return dateObj.toLocaleDateString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    }
+
     function parseTimeStringToDate(timeStr, baseDate) {
         const [time, modifier] = timeStr.split(' ');
         let [hours, minutes] = time.split(':');
-        hours = parseInt(hours);
+        hours = parseInt(hours, 10);
         if (modifier === 'PM' && hours < 12) hours += 12;
         if (modifier === 'AM' && hours === 12) hours = 0;
         const result = new Date(baseDate);
-        result.setHours(hours, parseInt(minutes), 0, 0);
+        result.setHours(hours, parseInt(minutes, 10), 0, 0);
         return result;
     }
 
+    function openQuickBookingModal() {
+        if (!quickBookingModal || !selectedDate) return;
+        if (modalDateDisplay) {
+            modalDateDisplay.textContent = formatLongDate(selectedDate);
+        }
+        renderTimeSlots();
+        if (modalMobileInput) modalMobileInput.value = '';
+        selectedTime = null;
+        checkFormValid();
+        
+        quickBookingModal.style.display = 'flex';
+        requestAnimationFrame(() => {
+            quickBookingModal.classList.add('active');
+        });
+    }
+
+    function closeQuickBookingModal() {
+        if (!quickBookingModal) return;
+        quickBookingModal.classList.remove('active');
+        setTimeout(() => {
+            quickBookingModal.style.display = 'none';
+        }, 300);
+    }
+
+    function closeSuccessPopup() {
+        if (!successModal) return;
+        const content = successModal.querySelector('.success-content');
+        if (content) {
+            content.style.opacity = '0';
+            content.style.transform = 'scale(0.92)';
+        }
+        successModal.classList.remove('active');
+        setTimeout(() => {
+            successModal.style.display = 'none';
+        }, 300);
+    }
+
+    function renderTimeSlots() {
+        if (!modalTimeSlotsContainer) return;
+        modalTimeSlotsContainer.innerHTML = '';
+        selectedTime = null;
+        
+        const now = new Date();
+        
+        times.forEach((time, index) => {
+            const slotDateTime = parseTimeStringToDate(time, selectedDate);
+            const isPast = slotDateTime <= now;
+            // Realistic booked state mock for demo
+            const isBooked = isPast || (index === 2 || index === 7);
+            
+            const slotBtn = document.createElement('button');
+            slotBtn.type = 'button';
+            slotBtn.textContent = time;
+            slotBtn.className = 'quick-time-slot-btn';
+            
+            if (isBooked) {
+                slotBtn.classList.add('disabled');
+                slotBtn.disabled = true;
+                slotBtn.title = isPast ? 'Time passed' : 'Already Booked';
+            } else {
+                slotBtn.addEventListener('click', () => {
+                    modalTimeSlotsContainer.querySelectorAll('.quick-time-slot-btn').forEach(btn => {
+                        btn.classList.remove('selected');
+                    });
+                    slotBtn.classList.add('selected');
+                    selectedTime = time;
+                    checkFormValid();
+                });
+            }
+            
+            modalTimeSlotsContainer.appendChild(slotBtn);
+        });
+    }
+
+    function checkFormValid() {
+        if (!modalConfirmBtn || !modalMobileInput) return;
+        const phone = modalMobileInput.value.trim();
+        if (selectedTime && phone.length >= 7) {
+            modalConfirmBtn.disabled = false;
+        } else {
+            modalConfirmBtn.disabled = true;
+        }
+    }
+
     function renderCalendar(month, year) {
-        if (!monthYearDisplay) return;
+        if (!monthYearDisplay || !calendarDaysContainer) return;
         monthYearDisplay.textContent = `${monthNames[month]} ${year}`;
         
         const firstDay = new Date(year, month, 1).getDay();
         const daysInMonth = new Date(year, month + 1, 0).getDate();
         
         const today = new Date();
-        today.setHours(0,0,0,0);
+        today.setHours(0, 0, 0, 0);
         
         let htmlStr = `
             <div style="font-weight: 600; color: var(--text-muted); font-size: 14px; margin-bottom: 8px;">Su</div>
@@ -88,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         for (let i = 1; i <= daysInMonth; i++) {
             const thisDate = new Date(year, month, i);
-            thisDate.setHours(0,0,0,0);
+            thisDate.setHours(0, 0, 0, 0);
             
             let isSelected = (selectedDate && selectedDate.getTime() === thisDate.getTime());
             
@@ -105,31 +212,34 @@ document.addEventListener('DOMContentLoaded', () => {
         
         calendarDaysContainer.innerHTML = htmlStr;
         
-        document.querySelectorAll('.cal-day-btn').forEach(btn => {
+        calendarDaysContainer.querySelectorAll('.cal-day-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                const day = parseInt(e.target.getAttribute('data-day'));
+                const day = parseInt(e.target.getAttribute('data-day'), 10);
                 selectedDate = new Date(year, month, day);
-                selectedDate.setHours(0,0,0,0);
+                selectedDate.setHours(0, 0, 0, 0);
                 renderCalendar(currentMonth, currentYear);
                 
                 if (selectDateBtn) {
-                    selectDateBtn.textContent = `Book for ${monthNames[month].substring(0,3)} ${day}`;
+                    selectDateBtn.textContent = `Book for ${monthNames[month].substring(0, 3)} ${day}`;
                     selectDateBtn.disabled = false;
                 }
                 
-                if (timeSelectionSection) {
-                    timeSelectionSection.style.display = 'none';
-                }
+                // Open popup modal upon date selection
+                openQuickBookingModal();
             });
         });
     }
     
-    if(calendarDaysContainer) {
+    if (calendarDaysContainer) {
         selectedDate = new Date();
-        selectedDate.setHours(0,0,0,0);
+        selectedDate.setHours(0, 0, 0, 0);
         
         if (selectDateBtn) {
-            selectDateBtn.textContent = `Book for ${monthNames[currentMonth].substring(0,3)} ${selectedDate.getDate()}`;
+            selectDateBtn.textContent = `Book for ${monthNames[currentMonth].substring(0, 3)} ${selectedDate.getDate()}`;
+            selectDateBtn.addEventListener('click', () => {
+                if (!selectedDate) return;
+                openQuickBookingModal();
+            });
         }
         
         renderCalendar(currentMonth, currentYear);
@@ -137,7 +247,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (prevMonthBtn) {
             prevMonthBtn.addEventListener('click', () => {
                 currentMonth--;
-                if(currentMonth < 0) { currentMonth = 11; currentYear--; }
+                if (currentMonth < 0) { currentMonth = 11; currentYear--; }
                 renderCalendar(currentMonth, currentYear);
             });
         }
@@ -145,132 +255,76 @@ document.addEventListener('DOMContentLoaded', () => {
         if (nextMonthBtn) {
             nextMonthBtn.addEventListener('click', () => {
                 currentMonth++;
-                if(currentMonth > 11) { currentMonth = 0; currentYear++; }
+                if (currentMonth > 11) { currentMonth = 0; currentYear++; }
                 renderCalendar(currentMonth, currentYear);
             });
         }
-        
-        if (selectDateBtn) {
-            selectDateBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                openGeneralBookingModal(selectedDate || new Date());
-            });
-        }
     }
-    
-    function showTimeSelection() {
-        if (!timeSelectionSection) return;
-        timeSelectionSection.style.display = 'block';
-        
-        const dayName = selectedDate.toLocaleDateString('en-US', { weekday: 'long' });
-        selectedDateDisplay.textContent = `${dayName}, ${monthNames[selectedDate.getMonth()]} ${selectedDate.getDate()}, ${selectedDate.getFullYear()}`;
-        
-        renderTimeSlots();
-        if(mobileInput) mobileInput.value = '';
-        checkFormValid();
+
+    if (modalMobileInput) {
+        modalMobileInput.addEventListener('input', checkFormValid);
     }
-    
-    function renderTimeSlots() {
-        timeSlotsContainer.innerHTML = '';
-        selectedTime = null;
-        
-        const now = new Date();
-        
-        times.forEach((time, index) => {
-            const slotDateTime = parseTimeStringToDate(time, selectedDate);
-            const isPast = slotDateTime <= now;
-            
-            // Randomly mock some slots as booked
-            const isBooked = isPast || (index === 2 || index === 6);
-            
-            const slotBtn = document.createElement('button');
-            slotBtn.textContent = time;
-            slotBtn.style.padding = '12px';
-            slotBtn.style.borderRadius = '8px';
-            slotBtn.style.border = '1px solid #e2e8f0';
-            slotBtn.style.fontWeight = '600';
-            slotBtn.style.transition = 'all 0.2s';
-            
-            if (isBooked) {
-                slotBtn.style.background = '#f1f5f9';
-                slotBtn.style.color = '#94a3b8';
-                slotBtn.style.cursor = 'not-allowed';
-                if (isPast) {
-                    slotBtn.style.textDecoration = 'line-through';
-                    slotBtn.title = 'Time passed';
-                } else {
-                    slotBtn.style.textDecoration = 'line-through';
-                    slotBtn.title = 'Already Booked';
-                }
-            } else {
-                slotBtn.style.background = 'white';
-                slotBtn.style.color = 'var(--text-primary)';
-                slotBtn.style.cursor = 'pointer';
-                
-                slotBtn.addEventListener('click', () => {
-                    Array.from(timeSlotsContainer.children).forEach(child => {
-                        if(child.style.cursor === 'pointer') {
-                            child.style.background = 'white';
-                            child.style.color = 'var(--text-primary)';
-                            child.style.borderColor = '#e2e8f0';
-                        }
-                    });
-                    
-                    slotBtn.style.background = 'var(--clr-blue)';
-                    slotBtn.style.color = 'white';
-                    slotBtn.style.borderColor = 'var(--clr-blue)';
-                    selectedTime = time;
-                    checkFormValid();
-                });
+
+    if (closeQuickBookingBtn) {
+        closeQuickBookingBtn.addEventListener('click', closeQuickBookingModal);
+    }
+
+    if (quickBookingModal) {
+        quickBookingModal.addEventListener('click', (e) => {
+            if (e.target === quickBookingModal) {
+                closeQuickBookingModal();
             }
-            
-            timeSlotsContainer.appendChild(slotBtn);
         });
     }
-    
-    function checkFormValid() {
-        if (!confirmBtn || !mobileInput) return;
-        const phone = mobileInput.value.trim();
-        if (selectedTime && phone.length > 8) {
-            confirmBtn.disabled = false;
-        } else {
-            confirmBtn.disabled = true;
-        }
-    }
-    
-    if (mobileInput) {
-        mobileInput.addEventListener('input', checkFormValid);
-    }
-    
-    if (confirmBtn) {
-        confirmBtn.addEventListener('click', () => {
-            const successModal = document.getElementById('success-modal');
-            const successDetails = document.getElementById('success-details');
-            const closeSuccessBtn = document.getElementById('close-success-btn');
+
+    if (modalConfirmBtn) {
+        modalConfirmBtn.addEventListener('click', () => {
+            const phone = modalMobileInput ? modalMobileInput.value.trim() : '';
+            const formattedDate = formatLongDate(selectedDate);
+            
+            closeQuickBookingModal();
             
             if (successModal && successDetails) {
-                successDetails.textContent = `Date: ${selectedDateDisplay.textContent}\nTime: ${selectedTime}\nMobile: ${mobileInput.value}\n\nWe will send you an SMS reminder shortly.`;
+                successDetails.innerHTML = `<strong>Date:</strong> ${formattedDate}<br><strong>Time:</strong> ${selectedTime}<br><strong>Mobile:</strong> ${phone}<br><br>We have scheduled your appointment with AuraClinic. An SMS reminder will be sent shortly.`;
                 
                 successModal.style.display = 'flex';
-                setTimeout(() => {
-                    successModal.querySelector('.success-content').style.opacity = '1';
-                    successModal.querySelector('.success-content').style.transform = 'scale(1)';
-                }, 10);
-                
-                closeSuccessBtn.addEventListener('click', () => {
-                    successModal.querySelector('.success-content').style.opacity = '0';
-                    successModal.querySelector('.success-content').style.transform = 'scale(0.9)';
-                    setTimeout(() => {
-                        successModal.style.display = 'none';
-                    }, 300);
+                requestAnimationFrame(() => {
+                    successModal.classList.add('active');
+                    const content = successModal.querySelector('.success-content');
+                    if (content) {
+                        content.style.opacity = '1';
+                        content.style.transform = 'scale(1)';
+                    }
                 });
             }
             
-            timeSelectionSection.style.display = 'none';
             selectedTime = null;
-            if(mobileInput) mobileInput.value = '';
+            if (modalMobileInput) modalMobileInput.value = '';
         });
     }
+
+    if (closeSuccessBtn) {
+        closeSuccessBtn.addEventListener('click', closeSuccessPopup);
+    }
+
+    if (successModal) {
+        successModal.addEventListener('click', (e) => {
+            if (e.target === successModal) {
+                closeSuccessPopup();
+            }
+        });
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            if (quickBookingModal && quickBookingModal.classList.contains('active')) {
+                closeQuickBookingModal();
+            }
+            if (successModal && successModal.classList.contains('active')) {
+                closeSuccessPopup();
+            }
+        }
+    });
 
 
     // ==========================================
@@ -328,17 +382,33 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================
-    // Navbar Scroll & Glow Effect
+    // Navbar Scroll & Dynamic CTA Extension
     // ==========================================
     const navbar = document.getElementById('navbar');
+    const testimonialsSection = document.getElementById('testimonials');
+    
     if (navbar) {
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 200) {
+        const updateNavbarOnScroll = () => {
+            // Normal top navbar converts to floating pill after ~3 scrolls (220px)
+            if (window.scrollY > 220) {
                 navbar.classList.add('scrolled');
             } else {
                 navbar.classList.remove('scrolled');
             }
-        });
+            
+            // "Book Appointment" CTA smoothly glides in when scrolling down into "Real Patients. Real Experiences." (#testimonials)
+            if (testimonialsSection) {
+                const rect = testimonialsSection.getBoundingClientRect();
+                if (rect.top <= 100) {
+                    navbar.classList.add('show-booking-cta');
+                } else {
+                    navbar.classList.remove('show-booking-cta');
+                }
+            }
+        };
+
+        window.addEventListener('scroll', updateNavbarOnScroll, { passive: true });
+        updateNavbarOnScroll(); // Initial check
     }
 
     // Active link highlighting
