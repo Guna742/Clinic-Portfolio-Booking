@@ -1863,24 +1863,26 @@ body {
     }
 
     .hero {
-        padding-top: 40px !important;
-        padding-bottom: 40px !important;
+        padding-top: clamp(75px, 12vh, 105px) !important;
+        padding-bottom: 50px !important;
         min-height: 100vh !important;
+        min-height: 100dvh !important;
         background-color: var(--bg-light-blue) !important;
         background-image: url('Hero-Image.png') !important;
         background-repeat: no-repeat !important;
-        background-position: center center !important;
+        background-position: center bottom !important;
         background-size: cover !important;
         display: flex !important;
+        flex-direction: column !important;
         align-items: center !important;
-        justify-content: center !important;
+        justify-content: flex-start !important;
     }
 
     .hero-container {
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
-        justify-content: center !important;
+        justify-content: flex-start !important;
         gap: 0 !important;
         width: 100% !important;
     }
@@ -1896,36 +1898,39 @@ body {
     .badge-gradient {
         display: inline-flex !important;
         white-space: nowrap !important;
-        font-size: 11px !important;
-        padding: 5px 12px !important;
-        gap: 6px !important;
-        margin-bottom: 16px !important;
+        font-size: 13px !important;
+        padding: 7px 16px !important;
+        gap: 7px !important;
+        margin-bottom: 18px !important;
         border-radius: 9999px !important;
         max-width: -moz-fit-content !important;
         max-width: fit-content !important;
-        box-shadow: 0 4px 16px rgba(37, 99, 235, 0.15) !important;
+        box-shadow: 0 4px 16px rgba(37, 99, 235, 0.2) !important;
     }
 
     .badge-gradient i {
-        font-size: 13.5px !important;
+        font-size: 15.5px !important;
     }
 
     .hero-title {
-        font-size: 36px !important;
-        line-height: 1.18 !important;
+        font-size: clamp(36px, 9vw, 44px) !important;
+        line-height: 1.15 !important;
         margin-bottom: 16px !important;
-        letter-spacing: -0.5px !important;
+        letter-spacing: -0.6px !important;
+        font-weight: 800 !important;
         text-align: center !important;
         max-width: 100% !important;
+        text-shadow: 0 2px 14px rgba(0, 0, 0, 0.22) !important;
     }
 
     .hero-description {
-        font-size: 15.5px !important;
-        line-height: 1.6 !important;
-        margin-bottom: 28px !important;
+        font-size: 17px !important;
+        line-height: 1.55 !important;
+        margin-bottom: 26px !important;
         text-align: center !important;
-        max-width: 500px !important;
-        color: rgba(255, 255, 255, 0.95) !important;
+        max-width: 520px !important;
+        color: rgba(255, 255, 255, 0.96) !important;
+        text-shadow: 0 1px 8px rgba(0, 0, 0, 0.25) !important;
     }
 
     .hero-buttons {
@@ -1936,14 +1941,15 @@ body {
         gap: 14px !important;
         margin-bottom: 0 !important;
         width: 100% !important;
-        max-width: 320px !important;
+        max-width: 330px !important;
     }
 
     .hero-buttons .btn {
         width: 100% !important;
-        max-width: 320px !important;
-        padding: 14px 24px !important;
-        font-size: 15px !important;
+        max-width: 330px !important;
+        padding: 15px 24px !important;
+        font-size: 16px !important;
+        font-weight: 600 !important;
         gap: 8px !important;
         justify-content: center !important;
         border-radius: 9999px !important;
