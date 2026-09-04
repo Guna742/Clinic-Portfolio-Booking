@@ -413,8 +413,8 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (navbar) {
         const updateNavbarOnScroll = () => {
-            // Normal top navbar converts to floating pill after ~3 scrolls (220px)
-            if (window.scrollY > 220) {
+            // Converts transparent top navbar to floating pill on scroll
+            if (window.scrollY > 40) {
                 navbar.classList.add('scrolled');
             } else {
                 navbar.classList.remove('scrolled');
@@ -1940,5 +1940,78 @@ document.addEventListener('DOMContentLoaded', () => {
             if (generalBookingModal && generalBookingModal.classList.contains('active')) closeGeneralBookingModal();
         }
     });
+
+    // ==========================================
+    // Cinematic Trust Counter Animation
+    // ==========================================
+    (function initTrustCounters() {
+        const trustValues = document.querySelectorAll('.trust-value[data-target]');
+        if (!trustValues.length) return;
+
+        // Easing — easeOutExpo for cinematic deceleration (fast start, soft landing)
+        function easeOutExpo(t) {
+            return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+        }
+
+        function formatValue(current, target, suffix, format, decimal) {
+            let display;
+            if (decimal) {
+                display = current.toFixed(parseInt(decimal));
+            } else if (format === 'k') {
+                display = current >= 10000
+                    ? '10,000'
+                    : Math.floor(current).toLocaleString();
+            } else {
+                display = Math.floor(current).toString();
+            }
+            return display + suffix;
+        }
+
+        function animateCounter(el, delay) {
+            const target   = parseFloat(el.dataset.target);
+            const suffix   = el.dataset.suffix  || '';
+            const format   = el.dataset.format  || '';
+            const decimal  = el.dataset.decimal || '';
+            const duration = 2200;
+            let startTime  = null;
+
+            el.classList.add('counting');
+
+            setTimeout(() => {
+                function step(timestamp) {
+                    if (!startTime) startTime = timestamp;
+                    const elapsed  = timestamp - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const eased    = easeOutExpo(progress);
+                    const current  = eased * target;
+
+                    el.textContent = formatValue(current, target, suffix, format, decimal);
+
+                    if (progress < 1) {
+                        requestAnimationFrame(step);
+                    } else {
+                        el.textContent = formatValue(target, target, suffix, format, decimal);
+                        el.classList.remove('counting');
+                        el.classList.add('counted');
+                    }
+                }
+                requestAnimationFrame(step);
+            }, delay);
+        }
+
+        // Fire once when the trust strip enters the viewport
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                observer.unobserve(entry.target);
+                const items = entry.target.querySelectorAll('.trust-value[data-target]');
+                items.forEach((el, i) => animateCounter(el, i * 200));
+            });
+        }, { threshold: 0.5 });
+
+        const strip = document.querySelector('.trust-indicators');
+        if (strip) observer.observe(strip);
+    })();
+
 });
 
